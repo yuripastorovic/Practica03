@@ -6,6 +6,11 @@ import gestion_BBDD
 
 
 def alta(conn):
+    """
+    Funcion que pide los datos de un profesor y lo inserta en la bbdd
+    :param conn: que realiza el insert
+    :return: None
+    """
     print("Alta profesor:")
     done = False
     while not done:
