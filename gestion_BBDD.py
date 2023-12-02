@@ -10,9 +10,9 @@ def mysqlconnect():
     :return: un objeto con la conexion a la BD.
     """
     conn = pymysql.connect(
-        host='localhost',
-        user='root',
-        port= 3306, #Puerto por defecto de MariaDB
+        host = 'localhost',
+        user = 'root',
+        port = 3306  #Puerto por defecto de MariaDB
     )
 
     cur = conn.cursor()
@@ -35,7 +35,7 @@ def create_tables(conn):
 
     cur.execute("""CREATE DATABASE IF NOT EXISTS jorge_antonio;""")  #Creamos la database si no existe
 
-    cur.execute("""USE IF EXISTS jorge_antonio;""")  #Usamos la database
+    cur.execute("""USE jorge_antonio;""")  #Usamos la database
 
     cur.execute("""SET foreign_key_checks = 1;""")  #Habilitamos las foreign keys
 
@@ -141,16 +141,16 @@ def update(conn, tabla, datos, primary):
     cur = conn.cursor()
 
     if tabla == 'alumnos':  #Seleccionamos la tabla en la que vamos a hacer el update
-        cur.execute('UPDATE alumnos SET nombre = \'' + datos['nombre'] + '\' apellido = \'' + datos['apellido'] + '\' telefono = \'' +
-            datos['telefono'] + '\' direccion = \'' + datos['direccion'] + '\' fech_nacimiento = \'' + datos['fech_nacimiento'] + '\' WHERE num_exp = ' + primary + ';')
+        cur.execute("UPDATE alumnos SET nombre = '" + datos['nombre'] + "' apellido = '" + datos['apellido'] + "' telefono = '" +
+            datos['telefono'] + "' direccion = '" + datos['direccion'] + "' fech_nacimiento = '" + datos['fech_nacimiento'] + "' WHERE num_exp = " + str(primary) + ";")
 
     elif tabla == 'profesores':
-        cur.execute('UPDATE profesores SET dni = \'' + datos['dni'] + '\' nombre = \'' + datos['nombre'] + '\' direccion = \'' +
-            datos['direccion'] + '\' telefono = \'' + datos['telefono'] + '\' WHERE id_profesor = ' + primary + ';')  #Realizamos el update en base a la primary
+        cur.execute("UPDATE profesores SET dni = '" + datos['dni'] + "', nombre = '" + datos['nombre'] + "', direccion = '" +
+            datos['direccion'] + "', telefono = '" + datos['telefono'] + "' WHERE id_profesor = " + str(primary) + ";")  #Realizamos el update en base a la primary
 
     elif tabla == 'cursos':
-        cur.execute('UPDATE cursos SET cod_curso = \'' + datos['cod_curso'] + '\' nombre = \'' + datos['nombre'] + '\' descripcion = \'' +
-            datos['descripcion'] + '\' WHERE cod_curso = ' + primary + ';')
+        cur.execute("UPDATE cursos SET cod_curso = '" + datos['cod_curso'] + "' nombre = '" + datos['nombre'] + "' descripcion = '" +
+            datos['descripcion'] + "' WHERE cod_curso = " + str(primary) + ";")
 
     conn.commit()  #Commiteamos
 
@@ -168,11 +168,11 @@ def delete(conn, tabla, primary):
     cur = conn.cursor()  #Creamos cursor
 
     if tabla == 'alumnos':  #Selccionaos la tabla en la que vamos a hacer el delete
-        cur.execute("DELETE FROM " + tabla + " WHERE num_exp = " + primary + ";")  #Si la primary concuerda borramos la row
+        cur.execute("DELETE FROM " + tabla + " WHERE num_exp = " + str(primary) + ";")  #Si la primary concuerda borramos la row
     elif tabla == 'profesores':
-        cur.execute("DELETE FROM " + tabla + " WHERE id_profesor = " + primary + ";")  #Si la primary concuerda borramos la row
+        cur.execute("DELETE FROM " + tabla + " WHERE id_profesor = " + str(primary) + ";")  #Si la primary concuerda borramos la row
     elif tabla == 'cursos':
-        cur.execute("DELETE FROM " + tabla + " WHERE cod_curso = " + primary + ";")  #Si la primary concuerda borramos la row
+        cur.execute("DELETE FROM " + tabla + " WHERE cod_curso = " + str(primary) + ";")  #Si la primary concuerda borramos la row
 
     conn.commit()  #Commit
 
@@ -205,11 +205,11 @@ def selec_one_from_tabla(coon, tabla, primary):
     cur = coon.cursor()  #Generamos cursor
 
     if tabla == "alumnos":  #Elegimos la tabla en la que hacer un select
-        cur.execute("SELECT " + tabla + ".* FROM " + tabla + " WHERE num_exp = " + primary + ";")
+        cur.execute("SELECT " + tabla + ".* FROM " + tabla + " WHERE num_exp = " + str(primary) + ";")
     elif tabla == "profesores":
-        cur.execute("SELECT " + tabla + ".* FROM " + tabla + " WHERE id_profesor = " + primary + ";")
+        cur.execute("SELECT " + tabla + ".* FROM " + tabla + " WHERE id_profesor = " + str(primary) + ";")
     elif tabla == "cursos":
-        cur.execute("SELECT " + tabla + ".* FROM " + tabla + " WHERE cod_curso = " + primary + ";")
+        cur.execute("SELECT " + tabla + ".* FROM " + tabla + " WHERE cod_curso = " + str(primary) + ";")
 
     out = cur.fetchall()  #Fetcheamos el resultado del cursor
 

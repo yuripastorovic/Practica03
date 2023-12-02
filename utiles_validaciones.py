@@ -123,7 +123,7 @@ def check_telefono():
     while fallos < 5:
         campo = entrada_teclado("telefono")
         if campo is not None:
-            if campo.numeric():
+            if campo.isnumeric():
                 if len(campo) == 9:
                     print("Telefono introducido con exito.")
                     return campo
@@ -156,8 +156,8 @@ def check_fecha():
                 mes = int(datos[1])
                 year = int(datos[2])
                 if (((mes == 1 or mes == 3 or mes == 5 or mes == 7 or mes == 8 or mes == 10 or mes == 12) and 0 < dia >= 31 and (1990 <= year >= 2023)) or
-                        ((mes == 4 or mes == 6 or mes == 9 or mes == 11) and 0 < dia >=30 and (1990 <= year >= 2023)) or
-                        (mes == 2 and 0 < dia >= 28 and (1990 <= year >= 2023))):
+                    ((mes == 4 or mes == 6 or mes == 9 or mes == 11) and 0 < dia >=30 and (1990 <= year >= 2023)) or
+                    (mes == 2 and 0 < dia >= 28 and (1990 <= year >= 2023))):
                     print("Fecha introducido con exito.")
                     return datetime.date(dia, mes, year)
                 else:

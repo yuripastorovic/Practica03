@@ -22,12 +22,11 @@ def alta(conn):
         if dni is not None:
             nombre = utiles_validaciones.check_campo("nombre", 25)
         if nombre is not None:
-            direccion = utiles_validaciones.check_campo("direccion, 50")
+            direccion = utiles_validaciones.check_campo("direccion", 50)
         if direccion is not None:
             telefono = utiles_validaciones.check_telefono()
         if telefono is not None:
-
-            datos = {"dni":dni, "nombre": nombre, "direccion": direccion, "telefono": telefono}
+            datos = {"dni": dni, "nombre": nombre, "direccion": direccion, "telefono": telefono}
 
             gestion_BBDD.insert(conn, "profesores", datos)
 
