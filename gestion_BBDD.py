@@ -12,14 +12,17 @@ def mysqlconnect():
     conn = pymysql.connect(
         host='localhost',
         user='root',
-        )
+        port= 3306, #Puerto por defecto de MariaDB
+    )
 
     cur = conn.cursor()
     cur.execute("select @@version")
     output = cur.fetchall()
     print("Version: ", output)
 
-    return conn
+    create_tables(conn) #Crea las tablas si no existen
+
+    return conn #Devuelve la conexion con la BBDD
 
 
 def create_tables(conn):
@@ -34,7 +37,7 @@ def create_tables(conn):
 
     cur.execute("""USE IF EXISTS jorge_antonio;""")
 
-    cur.execute("""SET foreign_key_checks = 1""")
+    cur.execute("""SET foreign_key_checks = 1;""")
 
     cur.execute("""
     CREATE TABLE IF NOT EXISTS alumnos (
@@ -108,41 +111,80 @@ def insert(conn, tabla, datos):
     cur = conn.cursor()
 
     if tabla == "alumnos":
-        cur.execute("INSERT INTO "+tabla+" (nombre, apellido, telefono, direccion, fech_nacimiento) "
-            "VALUES ('" + datos["nombre"] + "','" + datos["apellido"] + "','" + datos["telefono"] + "','" + datos["direccion"] + "','" + datos["f_nac"] + "');")
+        cur.execute("INSERT INTO " + tabla + " (nombre, apellido, telefono, direccion, fech_nacimiento) "
+                                             "VALUES ('" + datos["nombre"] + "','" + datos["apellido"] + "','" + datos[
+                        "telefono"] + "','" + datos["direccion"] + "','" + datos["fech_nacimiento"] + "');")
     elif tabla == "profesores":
-        cur.execute("INSERT INTO "+tabla+" (dni, nombre, direccion, telefono) "
-            "VALUES ('" + datos["dni"] + "','" + datos["nombre"] + "','" + datos["direccion"] + "','" + datos["telefono"] + "');")
+        cur.execute("INSERT INTO " + tabla + " (dni, nombre, direccion, telefono) "
+                                             "VALUES ('" + datos["dni"] + "','" + datos["nombre"] + "','" + datos[
+                        "direccion"] + "','" + datos["telefono"] + "');")
     elif tabla == "cursos":
-        cur.execute("INSERT INTO "+tabla+" (nombre, descripcion) VALUES ('" + datos["nombre"] + "','" + datos["descripcion"] + "');")
+        cur.execute("INSERT INTO " + tabla + " (nombre, descripcion) VALUES ('" + datos["nombre"] + "','" + datos[
+            "descripcion"] + "');")
     elif tabla == "cursos_profesores":
-        cur.execute("INSERT INTO "+tabla+" (id_profesor, cod_curso) VALUES ('" + datos["id_profesor"] + "','" + datos["cod_curso"] + "');")
+        cur.execute(
+            "INSERT INTO " + tabla + " (id_profesor, cod_curso) VALUES ('" + datos["id_profesor"] + "','" + datos[
+                "cod_curso"] + "');")
     elif tabla == "cursos_alumnos":
-        cur.execute("INSERT INTO "+tabla+" (num_exp, cod_curso) VALUES ('" + datos["num_exp"] + "','" + datos["cod_curso"] + "');")
+        cur.execute("INSERT INTO " + tabla + " (num_exp, cod_curso) VALUES ('" + datos["num_exp"] + "','" + datos[
+            "cod_curso"] + "');")
 
     conn.commit()
 
     cur.close()
 
 
+# multiples cambios
 def update(conn, tabla, datos, primary):
     """
-
-    :param conn:
-    :param tabla:
-    :param datos:
-    :param primary:
-    :return:
+    Metodo que se encarga de actualizar los valores de la tabla.
+    :param conn: conexion con la BBDD
+    :param tabla: tabla sobre la que se va a realizar la modificacion
+    :param datos: diccionario de datos que contiene los datos actualizados
+    :param primary: Primary key del registro a modificar
+    :return: None
     """
-    print('b')
+    cur = conn.cursor()
+
+    if tabla == 'alumnos':
+        cur.execute(
+            'UPDATE alumnos SET nombre = \'' + datos['nombre'] + '\' apellido = \'' + datos['apellido'] + '\' telefono = \'' +
+            datos['telefono'] + '\' direccion = \'' + datos['direccion'] + '\' fech_nacimiento = \'' + datos[
+                'fech_nacimiento'] + '\' WHERE num_exp = ' + primary + ';')
+
+
+    elif tabla == 'profesores':
+        cur.execute(
+            'UPDATE profesores SET dni = \'' + datos['dni'] + '\' nombre = \'' + datos['nombre'] + '\' direccion = \'' +
+            datos['direccion'] + '\' telefono = \'' + datos['telefono'] + '\' WHERE id_profesor = ' + primary + ';')
+
+    elif tabla == 'cursos':
+        cur.execute(
+            'UPDATE cursos SET cod_curso = \'' + datos['cod_curso'] + '\' nombre = \'' + datos['nombre'] + '\' descripcion = \'' +
+            datos['descripcion'] + '\' WHERE cod_curso = ' + primary + ';')
+
+    conn.commit()
+
+    cur.close()
 
 
 def delete(conn, tabla, primary):
     """
-
+    funcion que borra una row de la tabla.
     :param conn:
     :param tabla:
     :param primary:
     :return:
     """
-    print('b')
+    cur = conn.cursor()
+
+    if tabla == 'alumnos':
+        cur.execute("DELETE FROM " + tabla + " WHERE num_exp = " + primary + ";")
+    elif tabla == 'profesores':
+        cur.execute("DELETE FROM " + tabla + " WHERE id_profesor = " + primary + ";")
+    elif tabla == 'cursos':
+        cur.execute("DELETE FROM " + tabla + " WHERE cod_curso = " + primary + ";")
+
+    conn.commit()
+
+    cur.close()
