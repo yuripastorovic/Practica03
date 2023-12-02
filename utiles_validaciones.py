@@ -1,6 +1,8 @@
 """
 this is ustiles_validaciones
 """
+from datetime import datetime
+
 
 # UTILES
 def fails(fallos):
@@ -97,15 +99,15 @@ def check_dni():
                         return dni
                     else:
                         print("El ultimo caracter debe tratarse de una letra.")
-                        fallo = fails(fallos)
+                        fallo = fails(fallo)
                 else:
                     print("Los primeros 8 caracteres deben tratarse de numeros.")
-                    fallo = fails(fallos)
+                    fallo = fails(fallo)
             else:
                 print("El DNI debe de tener 9 caracteres.")
-                fallo = fails(fallos)
+                fallo = fails(fallo)
         else:
-            fallo = fails(fallos)
+            fallo = fails(fallo)
 
     print("Se han producido 5 fallos.\nAbotortando proceso")
     return None
@@ -155,7 +157,7 @@ def check_fecha():
                 year = int(datos[2])
                 if (((mes == 1 or mes == 3 or mes == 5 or mes == 7 or mes == 8 or mes == 10 or mes == 12) and 0 < dia >= 31 and (1990 <= year >= 2023)) or
                         ((mes == 4 or mes == 6 or mes == 9 or mes == 11) and 0 < dia >=30 and (1990 <= year >= 2023)) or
-                        (mes == 2 and 0 < dia >=28 and (1990 <= year >= 2023))):
+                        (mes == 2 and 0 < dia >= 28 and (1990 <= year >= 2023))):
                     print("Fecha introducido con exito.")
                     return datetime.date(dia, mes, year)
                 else:
