@@ -188,3 +188,40 @@ def delete(conn, tabla, primary):
     conn.commit()
 
     cur.close()
+
+
+def selec_all_from_tabla(conn, tabla):
+    """
+    Funcion que muestra tod el contenido de una tabla
+    :param conn: la conexion a la bbdd
+    :param tabla: la tabla que se desea mostrar
+    :return: una tupla con el contenido
+    """
+    cur = conn.cursor()
+
+    cur.execute("SELECT " + tabla + ".* FROM " + tabla + ";")
+    out = cur.fetchall()
+
+    return out
+
+
+def selec_uno_from_tabla(coon, tabla, primary):
+    """
+    Funcion que devuelve los campos de una row de una tabla que se desea buscar
+    :param coon: la conexion a la bbdd
+    :param tabla: la tabla que contiene la row
+    :param primary: la primary key de la row que se desea mostrar
+    :return: una tupla con los campos de la row
+    """
+    cur = coon.cursor()
+
+    if tabla == "alumnos":
+        cur.execute("SELECT " + tabla + ".* FROM " + tabla + " WHERE num_exp = " + primary + ";")
+    elif tabla == "profesores":
+        cur.execute("SELECT " + tabla + ".* FROM " + tabla + " WHERE id_profesor = " + primary + ";")
+    elif tabla == "cursos":
+        cur.execute("SELECT " + tabla + ".* FROM " + tabla + " WHERE cod_curso = " + primary + ";")
+
+    out = cur.fetchall()
+
+    return out
