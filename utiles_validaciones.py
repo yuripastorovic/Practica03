@@ -35,7 +35,7 @@ def confirmacion(contexto):
             print("Opcion no valida.")
 
 
-def entrada_teclado(contexto):
+def entrada_teclado(contexto=""):
     """
     Funcion de apoyo que cerciora que la cadena que se introduce no este vacia
     :param contexto: informcacion sobre el campo
@@ -52,15 +52,15 @@ def entrada_teclado(contexto):
 
 
 def check_index(indice):
-    indice = int(indice)
-    indice+=1
-    fallos=0
-    while fallos is not 5:
+    ind_arreglado = int(indice)
+    ind_arreglado += 1
+    fallos = 0
+    while fallos < 5:
         respuesta = entrada_teclado()
-        if respuesta.isnumeric() and 1<=respuesta<=indice:
-            return respuesta
+        if respuesta.isnumeric() and 1 <= int(respuesta) <= ind_arreglado:
+            return int(respuesta) - 1
         else:
-            print('Recuerde introducir un valor entre 1 y '+str(indice))
+            print('Recuerde introducir un valor entre 1 y '+str(ind_arreglado))
             fallos=fails(fallos)
             return None
 
@@ -78,7 +78,16 @@ def check_campo(contexto, long):
     while fallos < 5:
         campo = entrada_teclado(contexto)
         if campo is not None:
-            if campo.isalnum():#arreglar
+            palabras = campo.split(" ")
+            print(campo)
+            print(palabras)
+            carac_no_valido = False
+            for espacio in palabras:
+                print(espacio)
+                if not espacio.isalnum()  :#arreglar
+                    carac_no_valido = True
+
+            if not carac_no_valido:
                 long = int(long)
                 if 0 < len(campo) <= long:
                     print(contexto + " introducido con exito.")
@@ -169,19 +178,19 @@ def check_fecha():
                 dia = int(datos[0])
                 mes = int(datos[1])
                 year = int(datos[2])
-                if (((mes == 1 or mes == 3 or mes == 5 or mes == 7 or mes == 8 or mes == 10 or mes == 12) and 0 < dia >= 31 and (1990 <= year >= 2023)) or
-                    ((mes == 4 or mes == 6 or mes == 9 or mes == 11) and 0 < dia >=30 and (1990 <= year >= 2023)) or
-                    (mes == 2 and 0 < dia >= 28 and (1990 <= year >= 2023))):
-                    print("Fecha introducido con exito.")
-                    return datetime.date(dia, mes, year)
+                if ((mes in [1, 3, 5, 7, 8, 10, 12] and 1 <= dia <= 31 and 1990 <= year <= 2023) or
+                    (mes in [4, 6, 9, 11] and 1 <= dia <= 30 and 1990 <= year <= 2023) or
+                    (mes == 2 and 1 <= dia <= 28 and 1990 <= year <= 2023)):
+
+                    print("Fecha introducida con exito")
+                    return datetime.strptime(str(dia)+"/"+str(mes)+"/"+str(year), "%d/%m/%Y").strftime("%Y-%m-%d")
                 else:
-                    print("No se corresponde con una fecha valida: para mas info--> https://es.wikipedia.org/wiki/Mes\n")
-                    fallo = fails(fallos)
+                    print("No se corresponde con una fecha valida: para mas info--> https://es.wikipedia.org/wiki/Mes")
             else:
                 print("Formato de fecha no valido")
-                fallo = fails(fallos)
+                fallos = fails(fallos)
         else:
-            fallo = fails(fallos)
+            fallos = fails(fallos)
 
     print("Se han producido 5 fallos.\nAbotortando proceso")
     return None

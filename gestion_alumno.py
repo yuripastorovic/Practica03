@@ -20,13 +20,13 @@ def alta(conn):
         telefono = None
         direccion = None
         fech_nacimiento = None
-        nombre = utiles_validaciones.check_campo('alta Alumno', 25)
+        nombre = utiles_validaciones.check_campo('nombre', 25)
         if nombre is not None:
-            apellido = utiles_validaciones.check_campo('alta Alumno', 25)
+            apellido = utiles_validaciones.check_campo('apellido', 25)
         if apellido is not None:
             telefono = utiles_validaciones.check_telefono()
         if telefono is not None:
-            direccion = utiles_validaciones.check_campo('alta Alumno', 50)
+            direccion = utiles_validaciones.check_campo('direccion', 50)
         if direccion is not None:
             fech_nacimiento = utiles_validaciones.check_fecha()
         if fech_nacimiento is not None:
@@ -57,15 +57,18 @@ def baja(conn):
                 if respuesta == '1':
                     print('Introduzca el nombre del alumno a dar de baja.')
                     candidato= utiles_validaciones.check_campo('nombre', 25)
+                    pregunta = True
                 elif respuesta == '2':
                     print('Introduzca el apellido del alumno a dar de baja.')
                     candidato = utiles_validaciones.check_campo('apellido', 25)
+                    pregunta = True
                 elif respuesta == '3':
                     print('Introduzca el nombre completo del alumno a dar de baja.\nPrimero introduzca el nombre:')
                     name = utiles_validaciones.check_campo('nombre completo', 25)
                     print('Introduzca el nombre completo del alumno a dar de baja.\nAhora introduzca el apellido:')
                     apellido = utiles_validaciones.check_campo('nombre completo', 25)
                     candidato=name+'&&'+apellido
+                    pregunta = True
                 else:
                     print('Introduzca un valor valido')
                     fallos = utiles_validaciones.fails(fallos)
@@ -74,13 +77,13 @@ def baja(conn):
                     pregunta = True
                     salida = True
             if respuesta is not None:
+                alumno = gestion_BBDD.busqueda(conn, 'alumnos', 'nombre', candidato)  # Cogemos el alumno que corresponde con el nombre
+                print(len(alumno), type(alumno))
                 if respuesta == '1':
-                    alumno = gestion_BBDD.buscar(conn, 'alumnos', 'nombre', candidato.capitalize())  # Cogemos el alumno que corresponde con el nombre
                     if len(alumno) == 0:
                         print('No se encontro ningun alumno con el nombre '+candidato)
                     elif len(alumno) == 1:
-                        if utiles_validaciones.confirmacion("Seguro que desea eliminar a " + alumno[0][
-                            1]+" "+ alumno[0][2]+ " del sistema?"):  # pedimos confirmacion
+                        if utiles_validaciones.confirmacion("Seguro que desea eliminar a " + alumno[0][1]+" "+ alumno[0][2]+ " del sistema?"):  # pedimos confirmacion
                             gestion_BBDD.delete(conn, "alumnos", alumno[0][0])  # Mandamos el delete
                             print("Baja realizada con existo")
                             salida = True
@@ -90,14 +93,14 @@ def baja(conn):
                         print('Seleccione el alumno que desea eliminar:')
                         contador = 0
                         for alum in alumno:
-                            contador+=1
-                            print(str(contador)+'. '+alum[1]+alum[2])
-                        eliminado=utiles_validaciones.check_index(len(alum))
+                            contador += 1
+                            print(str(contador)+'. '+alum[1]+" "+alum[2])
+                        eliminado = utiles_validaciones.check_index(len(alumno))
                         if eliminado is not None:
-                            esgresado= alumno[(eliminado-1)][0]
-                            if utiles_validaciones.confirmacion("Seguro que desea eliminar a " + alumno[esgresado][
-                                1] + " " + alumno[esgresado][2] + " del sistema?"):
-                                gestion_BBDD.delete(conn, "alumnos", esgresado)  # Mandamos el delete
+                            esgresado = alumno[(eliminado)]
+                            print(esgresado, type(esgresado))
+                            if utiles_validaciones.confirmacion("Seguro que desea eliminar a " + esgresado[1] + " " + esgresado[2] + " del sistema?"):
+                                gestion_BBDD.delete(conn, "alumnos", esgresado[0])  # Mandamos el delete
                                 print("Baja realizada con existo")
                                 salida = True
                             else:
@@ -105,9 +108,11 @@ def baja(conn):
                         else:
                             print('Saliendo')
                 elif respuesta =='2':
-                    alumno = gestion_BBDD.buscar(conn, 'alumnos', 'apellido', candidato.capitalize())  # Cogemos el alumno que corresponde con el apellido
+                    alumno = gestion_BBDD.busqueda(conn, 'alumnos', 'apellido', candidato)  # Cogemos el alumno que corresponde con el apellido
                 else:
-                    alumno = gestion_BBDD.buscar(conn, 'alumnos', 'doble', candidato)  # Cogemos el alumno que corresponde con el nombre nombre + apellido
+                    alumno = gestion_BBDD.busqueda(conn, 'alumnos', 'doble', candidato)  # Cogemos el alumno que corresponde con el nombre nombre + apellido
+            else:
+                print("Estoy aqui")
 
 
     else:

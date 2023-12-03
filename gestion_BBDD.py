@@ -112,8 +112,7 @@ def insert(conn, tabla, datos):
 
     if tabla == "alumnos":  # El insert de alumno sacando los datos de un diccionario
         cur.execute("INSERT INTO " + tabla + " (nombre, apellido, telefono, direccion, fech_nacimiento) "
-                                             "VALUES ('" + datos["nombre"] + "','" + datos["apellido"] + "','" + datos[
-                        "telefono"] + "','" + datos["direccion"] + "','" + datos["fech_nacimiento"] + "');")
+            "VALUES ('" + datos["nombre"] + "','" + datos["apellido"] + "','" + datos["telefono"] + "','" + datos["direccion"] + "','" + datos["fech_nacimiento"] + "');")
     elif tabla == "profesores":  # El insert de profesores sacando los datos de un diccionario
         cur.execute("INSERT INTO " + tabla + " (dni, nombre, direccion, telefono) "
                                              "VALUES ('" + datos["dni"] + "','" + datos["nombre"] + "','" + datos[
@@ -221,17 +220,15 @@ def busqueda(coon, tabla, contexto, parametro):
     if tabla == 'alumnos':  # Elegimos la tabla en la que hacer un select
         if contexto == 'doble':
             elementos = parametro.split('&&')
-            nom = elementos[0].capitalize()
-            ape = elementos[1].capitalize()
-            cur.execute(
-                'SELECT ' + tabla + '.* FROM ' + tabla + ' WHERE nombre = \'' + nom + '\' AND apellido = \'' + ape + '\';')
+            nom = elementos[0]
+            ape = elementos[1]
+            cur.execute('SELECT ' + tabla + '.* FROM ' + tabla + ' WHERE nombre = \'' + nom + '\' AND apellido = \'' + ape + '\';')
         elif contexto == 'nombre':
             cur.execute('SELECT ' + tabla + '.* FROM ' + tabla + ' WHERE nombre = \'' + parametro + '\';')
         else:
             cur.execute('SELECT ' + tabla + '.* FROM ' + tabla + ' WHERE apellido = \'' + parametro + '\';')
     elif tabla == 'profesores':
-        cur.execute(
-            'SELECT ' + tabla + '.* FROM ' + tabla + ' WHERE ' + contexto + ' = \'' + parametro + '\';')  # esto esta mal la primary no es el DNI
+        cur.execute('SELECT ' + tabla + '.* FROM ' + tabla + ' WHERE ' + contexto + ' = \'' + parametro + '\';')  # esto esta mal la primary no es el DNI
     elif tabla == 'cursos':
         cur.execute('SELECT ' + tabla + '.* FROM ' + tabla + ' WHERE nombre = \'' + parametro + '\';')
 
