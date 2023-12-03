@@ -146,7 +146,7 @@ def update(conn, tabla, datos, primary):
 
     elif tabla == 'profesores':
         cur.execute("UPDATE profesores SET dni = '" + datos['dni'] + "', nombre = '" + datos['nombre'] + "', direccion = '" +
-            datos['direccion'] + "', telefono = '" + datos['telefono'] + "' WHERE id_profesor = " + str(primary) + ";")  #Realizamos el update en base a la primary
+            datos['direccion'] + "', telefono = '" + datos['telefono'] + "' WHERE dni = '" + primary + "';")  #Realizamos el update en base a la primary
 
     elif tabla == 'cursos':
         cur.execute("UPDATE cursos SET cod_curso = '" + datos['cod_curso'] + "' nombre = '" + datos['nombre'] + "' descripcion = '" +
@@ -170,7 +170,7 @@ def delete(conn, tabla, primary):
     if tabla == 'alumnos':  #Selccionaos la tabla en la que vamos a hacer el delete
         cur.execute("DELETE FROM " + tabla + " WHERE num_exp = " + str(primary) + ";")  #Si la primary concuerda borramos la row
     elif tabla == 'profesores':
-        cur.execute("DELETE FROM " + tabla + " WHERE id_profesor = " + str(primary) + ";")  #Si la primary concuerda borramos la row
+        cur.execute("DELETE FROM " + tabla + " WHERE dni = '" + primary + "';")  #Si la primary concuerda borramos la row
     elif tabla == 'cursos':
         cur.execute("DELETE FROM " + tabla + " WHERE cod_curso = " + str(primary) + ";")  #Si la primary concuerda borramos la row
 
@@ -207,7 +207,7 @@ def selec_one_from_tabla(coon, tabla, primary):
     if tabla == "alumnos":  #Elegimos la tabla en la que hacer un select
         cur.execute("SELECT " + tabla + ".* FROM " + tabla + " WHERE num_exp = " + str(primary) + ";")
     elif tabla == "profesores":
-        cur.execute("SELECT " + tabla + ".* FROM " + tabla + " WHERE id_profesor = " + str(primary) + ";")
+        cur.execute("SELECT " + tabla + ".* FROM " + tabla + " WHERE dni = '" + primary + "';")
     elif tabla == "cursos":
         cur.execute("SELECT " + tabla + ".* FROM " + tabla + " WHERE cod_curso = " + str(primary) + ";")
 
