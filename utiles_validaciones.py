@@ -79,11 +79,8 @@ def check_campo(contexto, long):
         campo = entrada_teclado(contexto)
         if campo is not None:
             palabras = campo.split(" ")
-            print(campo)
-            print(palabras)
             carac_no_valido = False
             for espacio in palabras:
-                print(espacio)
                 if not espacio.isalnum()  :#arreglar
                     carac_no_valido = True
 
