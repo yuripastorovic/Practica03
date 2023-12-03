@@ -51,6 +51,20 @@ def entrada_teclado(contexto):
         return None
 
 
+def check_index(indice):
+    indice = int(indice)
+    indice+=1
+    fallos=0
+    while fallos is not 5:
+        respuesta = entrada_teclado()
+        if respuesta.isnumeric() and 1<=respuesta<=indice:
+            return respuesta
+        else:
+            print('Recuerde introducir un valor entre 1 y '+str(indice))
+            fallos=fails(fallos)
+            return None
+
+
 # CHECKERS
 def check_campo(contexto, long):
     """
@@ -64,7 +78,7 @@ def check_campo(contexto, long):
     while fallos < 5:
         campo = entrada_teclado(contexto)
         if campo is not None:
-            if campo.isalnum():
+            if campo.isalnum():#arreglar
                 long = int(long)
                 if 0 < len(campo) <= long:
                     print(contexto + " introducido con exito.")

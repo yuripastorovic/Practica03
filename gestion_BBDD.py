@@ -10,9 +10,9 @@ def mysqlconnect():
     :return: un objeto con la conexion a la BD.
     """
     conn = pymysql.connect(
-        host = 'localhost',
-        user = 'root',
-        port = 3306  #Puerto por defecto de MariaDB
+        host='localhost',
+        user='root',
+        port=3306  # Puerto por defecto de MariaDB
     )
 
     cur = conn.cursor()
@@ -20,9 +20,9 @@ def mysqlconnect():
     output = cur.fetchall()
     print("Version: ", output)
 
-    create_tables(conn) #Crea las tablas si no existen
+    create_tables(conn)  # Crea las tablas si no existen
 
-    return conn #Devuelve la conexion con la BBDD
+    return conn  # Devuelve la conexion con la BBDD
 
 
 def create_tables(conn):
@@ -33,11 +33,11 @@ def create_tables(conn):
     """
     cur = conn.cursor()
 
-    cur.execute("""CREATE DATABASE IF NOT EXISTS jorge_antonio;""")  #Creamos la database si no existe
+    cur.execute("""CREATE DATABASE IF NOT EXISTS jorge_antonio;""")  # Creamos la database si no existe
 
-    cur.execute("""USE jorge_antonio;""")  #Usamos la database
+    cur.execute("""USE jorge_antonio;""")  # Usamos la database
 
-    cur.execute("""SET foreign_key_checks = 1;""")  #Habilitamos las foreign keys
+    cur.execute("""SET foreign_key_checks = 1;""")  # Habilitamos las foreign keys
 
     cur.execute(""" 
     CREATE TABLE IF NOT EXISTS alumnos (
@@ -47,7 +47,7 @@ def create_tables(conn):
         telefono CHAR(9) NOT NULL,
         direccion VARCHAR(50) NOT NULL,
         fech_nacimiento DATE NOT NULL       
-    );""")  #Tabla alumnos
+    );""")  # Tabla alumnos
 
     cur.execute("""
     CREATE TABLE IF NOT EXISTS profesores (
@@ -56,14 +56,14 @@ def create_tables(conn):
         nombre VARCHAR(25) NOT NULL,
         direccion VARCHAR(50) NOT NULL,
         telefono CHAR(9) NOT NULL
-    );""")  #Tabla profesores
+    );""")  # Tabla profesores
 
     cur.execute("""
     CREATE TABLE IF NOT EXISTS cursos (
         cod_curso INT AUTO_INCREMENT PRIMARY KEY,
         nombre VARCHAR(25) UNIQUE NOT NULL,
         descripcion VARCHAR(50) NOT NULL  
-    );""")  #Tabla cursos
+    );""")  # Tabla cursos
 
     cur.execute("""
     CREATE TABLE IF NOT EXISTS cursos_profesores (
@@ -78,7 +78,7 @@ def create_tables(conn):
             REFERENCES profesores(id_profesor) 
             ON UPDATE CASCADE 
             ON DELETE CASCADE            
-    );""")  #Tabla que relaciona cursos y profesores
+    );""")  # Tabla que relaciona cursos y profesores
 
     cur.execute("""
     CREATE TABLE IF NOT EXISTS cursos_alumnos (
@@ -93,11 +93,11 @@ def create_tables(conn):
             REFERENCES alumnos(num_exp) 
             ON UPDATE CASCADE 
             ON DELETE CASCADE            
-    );""")  #Tabla que relaciona cursos y alumnos
+    );""")  # Tabla que relaciona cursos y alumnos
 
-    conn.commit()  #commiteamos cambios
+    conn.commit()  # commiteamos cambios
 
-    cur.close()  #cerramos el cursos
+    cur.close()  # cerramos el cursos
 
 
 def insert(conn, tabla, datos):
@@ -108,24 +108,30 @@ def insert(conn, tabla, datos):
     :param datos: los datos de la row almacenados en un diccionario
     :return: None
     """
-    cur = conn.cursor()  #Cursor
+    cur = conn.cursor()  # Cursor
 
-    if tabla == "alumnos":  #El insert de alumno sacando los datos de un diccionario
+    if tabla == "alumnos":  # El insert de alumno sacando los datos de un diccionario
         cur.execute("INSERT INTO " + tabla + " (nombre, apellido, telefono, direccion, fech_nacimiento) "
-            "VALUES ('" + datos["nombre"] + "','" + datos["apellido"] + "','" + datos["telefono"] + "','" + datos["direccion"] + "','" + datos["fech_nacimiento"] + "');")
-    elif tabla == "profesores":  #El insert de profesores sacando los datos de un diccionario
+                                             "VALUES ('" + datos["nombre"] + "','" + datos["apellido"] + "','" + datos[
+                        "telefono"] + "','" + datos["direccion"] + "','" + datos["fech_nacimiento"] + "');")
+    elif tabla == "profesores":  # El insert de profesores sacando los datos de un diccionario
         cur.execute("INSERT INTO " + tabla + " (dni, nombre, direccion, telefono) "
-            "VALUES ('" + datos["dni"] + "','" + datos["nombre"] + "','" + datos["direccion"] + "','" + datos["telefono"] + "');")
-    elif tabla == "cursos":  #El insert de cursos sacando los datos de un diccionario
-        cur.execute("INSERT INTO " + tabla + " (nombre, descripcion) VALUES ('" + datos["nombre"] + "','" + datos["descripcion"] + "');")
-    elif tabla == "cursos_profesores":  #El insert de crusos-profesores sacando los datos de un diccionario
-        cur.execute("INSERT INTO " + tabla + " (id_profesor, cod_curso) VALUES ('" + datos["id_profesor"] + "','" + datos["cod_curso"] + "');")
-    elif tabla == "cursos_alumnos":  #El insert de cursos-alumno sacando los datos de un diccionario
-        cur.execute("INSERT INTO " + tabla + " (num_exp, cod_curso) VALUES ('" + datos["num_exp"] + "','" + datos["cod_curso"] + "');")
+                                             "VALUES ('" + datos["dni"] + "','" + datos["nombre"] + "','" + datos[
+                        "direccion"] + "','" + datos["telefono"] + "');")
+    elif tabla == "cursos":  # El insert de cursos sacando los datos de un diccionario
+        cur.execute("INSERT INTO " + tabla + " (nombre, descripcion) VALUES ('" + datos["nombre"] + "','" + datos[
+            "descripcion"] + "');")
+    elif tabla == "cursos_profesores":  # El insert de crusos-profesores sacando los datos de un diccionario
+        cur.execute(
+            "INSERT INTO " + tabla + " (id_profesor, cod_curso) VALUES ('" + datos["id_profesor"] + "','" + datos[
+                "cod_curso"] + "');")
+    elif tabla == "cursos_alumnos":  # El insert de cursos-alumno sacando los datos de un diccionario
+        cur.execute("INSERT INTO " + tabla + " (num_exp, cod_curso) VALUES ('" + datos["num_exp"] + "','" + datos[
+            "cod_curso"] + "');")
 
-    conn.commit()  #Commit
+    conn.commit()  # Commit
 
-    cur.close()  #Colse cursor
+    cur.close()  # Colse cursor
 
 
 # multiples cambios
@@ -140,21 +146,26 @@ def update(conn, tabla, datos, primary):
     """
     cur = conn.cursor()
 
-    if tabla == 'alumnos':  #Seleccionamos la tabla en la que vamos a hacer el update
-        cur.execute("UPDATE alumnos SET nombre = '" + datos['nombre'] + "' apellido = '" + datos['apellido'] + "' telefono = '" +
-            datos['telefono'] + "' direccion = '" + datos['direccion'] + "' fech_nacimiento = '" + datos['fech_nacimiento'] + "' WHERE num_exp = " + str(primary) + ";")
+    if tabla == 'alumnos':  # Seleccionamos la tabla en la que vamos a hacer el update
+        cur.execute("UPDATE alumnos SET nombre = '" + datos['nombre'] + "' apellido = '" + datos[
+            'apellido'] + "' telefono = '" +
+                    datos['telefono'] + "' direccion = '" + datos['direccion'] + "' fech_nacimiento = '" + datos[
+                        'fech_nacimiento'] + "' WHERE num_exp = " + str(primary) + ";")
 
     elif tabla == 'profesores':
-        cur.execute("UPDATE profesores SET dni = '" + datos['dni'] + "', nombre = '" + datos['nombre'] + "', direccion = '" +
-            datos['direccion'] + "', telefono = '" + datos['telefono'] + "' WHERE dni = '" + primary + "';")  #Realizamos el update en base a la primary
+        cur.execute(
+            "UPDATE profesores SET dni = '" + datos['dni'] + "', nombre = '" + datos['nombre'] + "', direccion = '" +
+            datos['direccion'] + "', telefono = '" + datos[
+                'telefono'] + "' WHERE dni = '" + primary + "';")  # Realizamos el update en base a la primary
 
     elif tabla == 'cursos':
-        cur.execute("UPDATE cursos SET cod_curso = '" + datos['cod_curso'] + "' nombre = '" + datos['nombre'] + "' descripcion = '" +
-            datos['descripcion'] + "' WHERE cod_curso = " + str(primary) + ";")
+        cur.execute("UPDATE cursos SET cod_curso = '" + datos['cod_curso'] + "' nombre = '" + datos[
+            'nombre'] + "' descripcion = '" +
+                    datos['descripcion'] + "' WHERE cod_curso = " + str(primary) + ";")
 
-    conn.commit()  #Commiteamos
+    conn.commit()  # Commiteamos
 
-    cur.close()  #cerramos cursor
+    cur.close()  # cerramos cursor
 
 
 def delete(conn, tabla, primary):
@@ -165,18 +176,21 @@ def delete(conn, tabla, primary):
     :param primary: la primary key de la row que se va a borrar
     :return: None
     """
-    cur = conn.cursor()  #Creamos cursor
+    cur = conn.cursor()  # Creamos cursor
 
-    if tabla == 'alumnos':  #Selccionaos la tabla en la que vamos a hacer el delete
-        cur.execute("DELETE FROM " + tabla + " WHERE num_exp = " + str(primary) + ";")  #Si la primary concuerda borramos la row
+    if tabla == 'alumnos':  # Selccionaos la tabla en la que vamos a hacer el delete
+        cur.execute("DELETE FROM " + tabla + " WHERE num_exp = " + str(
+            primary) + ";")  # Si la primary concuerda borramos la row
     elif tabla == 'profesores':
-        cur.execute("DELETE FROM " + tabla + " WHERE dni = '" + primary + "';")  #Si la primary concuerda borramos la row
+        cur.execute(
+            "DELETE FROM " + tabla + " WHERE dni = '" + primary + "';")  # Si la primary concuerda borramos la row
     elif tabla == 'cursos':
-        cur.execute("DELETE FROM " + tabla + " WHERE cod_curso = " + str(primary) + ";")  #Si la primary concuerda borramos la row
+        cur.execute("DELETE FROM " + tabla + " WHERE cod_curso = " + str(
+            primary) + ";")  # Si la primary concuerda borramos la row
 
-    conn.commit()  #Commit
+    conn.commit()  # Commit
 
-    cur.close()  #Colse cursor
+    cur.close()  # Colse cursor
 
 
 def selec_all_from_tabla(conn, tabla):
@@ -186,12 +200,44 @@ def selec_all_from_tabla(conn, tabla):
     :param tabla: la tabla que se desea mostrar
     :return: una tupla con el contenido
     """
-    cur = conn.cursor()  #Ceamos cursor
+    cur = conn.cursor()  # Ceamos cursor
 
-    cur.execute("SELECT " + tabla + ".* FROM " + tabla + ";")  #Seleccionamos tod el contenido de una tabla
-    out = cur.fetchall()  #Lo fetchamos
+    cur.execute("SELECT " + tabla + ".* FROM " + tabla + ";")  # Seleccionamos tod el contenido de una tabla
+    out = cur.fetchall()  # Lo fetchamos
 
-    return out  #Lo devolvemos
+    return out  # Lo devolvemos
+
+
+def busqueda(coon, tabla, contexto, parametro):
+    """
+    Funcion que devuelve los campos de una row de una tabla que se desea buscar
+    :param coon: la conexion a la bbdd
+    :param tabla: la tabla que contiene la row
+    :param primary: la primary key de la row que se desea mostrar
+    :return: una tupla con los campos de la row
+    """
+    cur = coon.cursor()  # Generamos cursor
+
+    if tabla == 'alumnos':  # Elegimos la tabla en la que hacer un select
+        if contexto == 'doble':
+            elementos = parametro.split('&&')
+            nom = elementos[0].capitalize()
+            ape = elementos[1].capitalize()
+            cur.execute(
+                'SELECT ' + tabla + '.* FROM ' + tabla + ' WHERE nombre = \'' + nom + '\' AND apellido = \'' + ape + '\';')
+        elif contexto == 'nombre':
+            cur.execute('SELECT ' + tabla + '.* FROM ' + tabla + ' WHERE nombre = \'' + parametro + '\';')
+        else:
+            cur.execute('SELECT ' + tabla + '.* FROM ' + tabla + ' WHERE apellido = \'' + parametro + '\';')
+    elif tabla == 'profesores':
+        cur.execute(
+            'SELECT ' + tabla + '.* FROM ' + tabla + ' WHERE ' + contexto + ' = \'' + parametro + '\';')  # esto esta mal la primary no es el DNI
+    elif tabla == 'cursos':
+        cur.execute('SELECT ' + tabla + '.* FROM ' + tabla + ' WHERE nombre = \'' + parametro + '\';')
+
+    out = cur.fetchall()  # Fetcheamos el resultado del cursor
+
+    return out  # Devolvemos la tupla
 
 
 def selec_one_from_tabla(coon, tabla, primary):
@@ -202,15 +248,16 @@ def selec_one_from_tabla(coon, tabla, primary):
     :param primary: la primary key de la row que se desea mostrar
     :return: una tupla con los campos de la row
     """
-    cur = coon.cursor()  #Generamos cursor
+    cur = coon.cursor()  # Generamos cursor
 
-    if tabla == "alumnos":  #Elegimos la tabla en la que hacer un select
+    if tabla == "alumnos":  # Elegimos la tabla en la que hacer un select
         cur.execute("SELECT " + tabla + ".* FROM " + tabla + " WHERE num_exp = " + str(primary) + ";")
     elif tabla == "profesores":
-        cur.execute("SELECT " + tabla + ".* FROM " + tabla + " WHERE dni = '" + primary + "';")
+        cur.execute(
+            "SELECT " + tabla + ".* FROM " + tabla + " WHERE dni = '" + primary + "';")
     elif tabla == "cursos":
         cur.execute("SELECT " + tabla + ".* FROM " + tabla + " WHERE cod_curso = " + str(primary) + ";")
 
-    out = cur.fetchall()  #Fetcheamos el resultado del cursor
+    out = cur.fetchall()  # Fetcheamos el resultado del cursor
 
-    return out  #Devolvemos la tupla
+    return out  # Devolvemos la tupla
