@@ -3,6 +3,8 @@ this is ustiles_validaciones
 """
 from datetime import datetime
 
+import gestion_BBDD
+
 
 # UTILES
 def fails(fallos):
@@ -26,7 +28,7 @@ def confirmacion(contexto):
     elect = ""
     while elect != "1" or elect != "2":
         print(contexto)
-        elect = input("1. Si\n2.No\n")
+        elect = input("1. Si\n2. No\n")
         if elect == "1":
             return True
         elif elect == "2":
@@ -61,7 +63,7 @@ def check_index(indice):
             return int(respuesta) - 1
         else:
             print('Recuerde introducir un valor entre 1 y '+str(ind_arreglado))
-            fallos=fails(fallos)
+            fallos = fails(fallos)
             return None
 
 
@@ -80,23 +82,26 @@ def check_campo(contexto, long):
         if campo is not None:
             palabras = campo.split(" ")
             carac_no_valido = False
-            for espacio in palabras:
-                if not espacio.isalnum()  :#arreglar
+            for espacio in palabras:  #Comprobamos que en las posibles palabras del campo no haya componentes no alfanumericos
+                if not espacio.isalnum():
                     carac_no_valido = True
 
             if not carac_no_valido:
                 long = int(long)
-                if 0 < len(campo) <= long:
+                if 0 < len(campo) <= long:  #Verificamos la longitud del campo
                     print(contexto + " introducido con exito.")
                     return campo
                 else:
                     print(contexto + " tiene una longituz no valida, longitud maxima: " + long)
-                    fallo = fails(fallos)
+                    fallos = fails(fallos)
             else:
-                print(contexto + "contiene caracteres no validos")
-                fallo = fails(fallos)
+                if len(campo) == 0:
+                    print("El campo, " + contexto + " no puede estar vacio.")
+                else:
+                    print(contexto + " contiene caracteres no validos")
+                    fallos = fails(fallos)
         else:
-            fallo = fails(fallos)
+            fallos = fails(fallos)
     print("Se han producido 5 fallos.\nAbotortando proceso")
     return None
 
@@ -199,8 +204,22 @@ def unique_nombre_curso(comparacion): # comprueba que el nombre del curso no est
     return None
 
 
-def unique_dni(comparacion):# comprueba que el dni del profesor es unico, que no esta en uso
-    return None
+def unique_dni(conn, comparacion):# comprueba que el dni del profesor es unico, que no esta en uso
+    """
+    Funcion que se asegura que del dni introducido no se repite.
+    :param conn: la conexion de la bbdd
+    :param comparacion: el dni a comparar
+    :return: True si el dni no esta, False si esta
+    """
+    profesores = gestion_BBDD.selec_all_from_tabla(conn, "profesores")
+    if len(profesores) > 0:
+        for profesor in profesores:
+            if profesor[1] == comparacion:
+                return False  #Si el dni ya esta returnea false
+
+        return True  #Si no encuentra el dni returnea true
+    else:
+        return True  #Si no hay profesores entonces cualquier dni vale
 
 
 def unique_nombre_completo(comparacion):# comprueba que el nombre completo del alumno es unico, que no esta en uso

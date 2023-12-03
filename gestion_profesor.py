@@ -19,8 +19,10 @@ def alta(conn):
         direccion = None
         telefono = None  #Las varaibles
         dni = utiles_validaciones.check_dni()  #Comprobamos que los campos son validos
-        if dni is not None:
+        if dni is not None and utiles_validaciones.unique_dni(conn, dni):
             nombre = utiles_validaciones.check_campo("nombre", 25)
+        else:
+            print("El dni ya pertenecia a otro profesor.")
         if nombre is not None:
             direccion = utiles_validaciones.check_campo("direccion", 50)
         if direccion is not None:
@@ -132,13 +134,19 @@ def modificar(conn):
         while not done:  #Para dar de baja mas de uno
             print("Introduzca el DNI del profesor que desea eliminar del sistema.")
             dni = utiles_validaciones.check_dni()  #pedimos dni valido
-            if dni is not None:
+            if dni is not None and not utiles_validaciones.unique_dni(conn, dni):
                 profesor = gestion_BBDD.selec_one_from_tabla(conn, "profesores", dni)
                 if len(profesor) > 0:  #Si lo encuentra
                     print("Menu de modificacion:")  #Se entra en el menu de profesores
                     datos = {"dni": profesor[0][1], "nombre": profesor[0][2], "direccion": profesor[0][3], "telefono": profesor[0][4]}  #Construimos el diccionario
                     elec = ""
                     while elec != "0":  #Menu de modificacion
+                        print("1. Modificar nombre.")
+                        print("2. Modificar DNI.")
+                        print("3. Modificar direccion.")
+                        print("4. Modificar telefono.")
+                        print("0. Salir.")
+                        elec = input("Seleccione opcion: ")
                         if elec == "1":  #Cambio de nombre. Se pide nuevo nombre, si se acepta la confirmacion se cambia en el diccionario y se manda a uodatear.
                             print("Nuevo ", end="")
                             nombre = utiles_validaciones.check_campo("Nombre", 25)
@@ -152,19 +160,23 @@ def modificar(conn):
                         elif elec == "2":  #Cambio de dni. Se pide nuevo nombre, si se acepta la confirmacion se cambia en el diccionario y se manda a uodatear.
                             print("Nuevo ", end="")
                             dni2 = utiles_validaciones.check_dni()
-                            if utiles_validaciones.confirmacion("Seguro que desea cambiar el dni:  " + datos["dni"] + " por " + dni2 + "?"):
-                                datos["dni"] = dni2
-                                gestion_BBDD.update(conn, "profesores", datos, dni)
-                                dni = dni2  #Se actualiza el valor de la unique que se usa para buscar
-                                print("Modificacion realizada exitosamente")
+                            if utiles_validaciones.unique_dni(conn, dni2):
+                                if utiles_validaciones.confirmacion("Seguro que desea cambiar el dni:  " + datos["dni"] + " por " + dni2 + "?"):
+                                    datos["dni"] = dni2
+                                    gestion_BBDD.update(conn, "profesores", datos, dni)
+                                    dni = dni2  #Se actualiza el valor de la unique que se usa para buscar
+                                    print("Modificacion realizada exitosamente")
+                                else:
+                                    print("Modificacion cancelada")
+
                             else:
-                                print("Modificacion cancelada")
+                                print("Ese dni ya pertenece a otro profesor")
 
                         elif elec == "3":  #Cambio de descripcion. Se pide nuevo nombre, si se acepta la confirmacion se cambia en el diccionario y se manda a uodatear.
                             print("Nuevo ", end="")
-                            descripcion = utiles_validaciones.check_campo("Descripcion", 50)
-                            if utiles_validaciones.confirmacion("Seguro que desea cambiar la descripcion:  " + datos["descripcion"] + " por " + descripcion + "?"):
-                                datos["descripcion"] = descripcion
+                            direccion = utiles_validaciones.check_campo("direccion", 50)
+                            if utiles_validaciones.confirmacion("Seguro que desea cambiar la direccion:  " + datos["direccion"] + " por " + direccion + "?"):
+                                datos["direccion"] = direccion
                                 gestion_BBDD.update(conn, "profesores", datos, dni)
                                 print("Modificacion realizada exitosamente")
                             else:
@@ -185,10 +197,12 @@ def modificar(conn):
 
                         else:  #Opcion no valida
                             print("Opcion no valida.")
-
-                    if not utiles_validaciones.confirmacion("Desea modificar otro profesor?"):  #Para modificar mas de un profesor
-                        done = True
                 else:
                     print("No se encontro ningun profesor con ese DNI.")
+            else:
+                print("El dni no pertenece al de ningun profesor existente en la bbdd")
+
+            if not utiles_validaciones.confirmacion("Desea modificar otro profesor?"):  #Para modificar mas de un profesor
+                        done = True
     else:  #Si no hay profesores
        print("No hay profesores en el centro.")
