@@ -115,18 +115,15 @@ def insert(conn, tabla, datos):
             "VALUES ('" + datos["nombre"] + "','" + datos["apellido"] + "','" + datos["telefono"] + "','" + datos["direccion"] + "','" + datos["fech_nacimiento"] + "');")
     elif tabla == "profesores":  # El insert de profesores sacando los datos de un diccionario
         cur.execute("INSERT INTO " + tabla + " (dni, nombre, direccion, telefono) "
-                                             "VALUES ('" + datos["dni"] + "','" + datos["nombre"] + "','" + datos[
-                        "direccion"] + "','" + datos["telefono"] + "');")
+            "VALUES ('" + datos["dni"] + "','" + datos["nombre"] + "','" + datos["direccion"] + "','" + datos["telefono"] + "');")
     elif tabla == "cursos":  # El insert de cursos sacando los datos de un diccionario
-        cur.execute("INSERT INTO " + tabla + " (nombre, descripcion) VALUES ('" + datos["nombre"] + "','" + datos[
-            "descripcion"] + "');")
+        cur.execute("INSERT INTO " + tabla + " (nombre, descripcion) "
+            "VALUES ('" + datos["nombre"] + "','" + datos["descripcion"] + "');")
     elif tabla == "cursos_profesores":  # El insert de crusos-profesores sacando los datos de un diccionario
         cur.execute(
-            "INSERT INTO " + tabla + " (id_profesor, cod_curso) VALUES ('" + datos["id_profesor"] + "','" + datos[
-                "cod_curso"] + "');")
+            "INSERT INTO " + tabla + " (id_profesor, cod_curso) VALUES ('" + datos["id_profesor"] + "','" + datos["cod_curso"] + "');")
     elif tabla == "cursos_alumnos":  # El insert de cursos-alumno sacando los datos de un diccionario
-        cur.execute("INSERT INTO " + tabla + " (num_exp, cod_curso) VALUES ('" + datos["num_exp"] + "','" + datos[
-            "cod_curso"] + "');")
+        cur.execute("INSERT INTO " + tabla + " (num_exp, cod_curso) VALUES ('" + datos["num_exp"] + "','" + datos["cod_curso"] + "');")
 
     conn.commit()  # Commit
 
@@ -146,21 +143,15 @@ def update(conn, tabla, datos, primary):
     cur = conn.cursor()
 
     if tabla == 'alumnos':  # Seleccionamos la tabla en la que vamos a hacer el update
-        cur.execute("UPDATE alumnos SET nombre = '" + datos['nombre'] + "' apellido = '" + datos[
-            'apellido'] + "' telefono = '" +
-                    datos['telefono'] + "' direccion = '" + datos['direccion'] + "' fech_nacimiento = '" + datos[
-                        'fech_nacimiento'] + "' WHERE num_exp = " + str(primary) + ";")
+        cur.execute("UPDATE alumnos SET nombre = '" + datos['nombre'] + "' apellido = '" + datos['apellido'] + "' telefono = '" +
+            datos['telefono'] + "' direccion = '" + datos['direccion'] + "' fech_nacimiento = '" + datos['fech_nacimiento'] + "' WHERE num_exp = " + str(primary) + ";")
 
     elif tabla == 'profesores':
-        cur.execute(
-            "UPDATE profesores SET dni = '" + datos['dni'] + "', nombre = '" + datos['nombre'] + "', direccion = '" +
-            datos['direccion'] + "', telefono = '" + datos[
-                'telefono'] + "' WHERE dni = '" + primary + "';")  # Realizamos el update en base a la primary
+        cur.execute("UPDATE profesores SET dni = '" + datos['dni'] + "', nombre = '" + datos['nombre'] + "', direccion = '" + datos['direccion'] + "', telefono = '" +
+            datos['telefono'] + "' WHERE dni = '" + primary + "';")  # Realizamos el update en base a la primary
 
     elif tabla == 'cursos':
-        cur.execute("UPDATE cursos SET cod_curso = '" + datos['cod_curso'] + "' nombre = '" + datos[
-            'nombre'] + "' descripcion = '" +
-                    datos['descripcion'] + "' WHERE cod_curso = " + str(primary) + ";")
+        cur.execute("UPDATE cursos SET cod_curso = '" + datos['cod_curso'] + "' nombre = '" + datos['nombre'] + "' descripcion = '" + datos['descripcion'] + "' WHERE nombre = '" + primary + "';")
 
     conn.commit()  # Commiteamos
 
@@ -178,14 +169,12 @@ def delete(conn, tabla, primary):
     cur = conn.cursor()  # Creamos cursor
 
     if tabla == 'alumnos':  # Selccionaos la tabla en la que vamos a hacer el delete
-        cur.execute("DELETE FROM " + tabla + " WHERE num_exp = " + str(
-            primary) + ";")  # Si la primary concuerda borramos la row
+        cur.execute("DELETE FROM " + tabla + " WHERE num_exp = " + str(primary) + ";")  # Si la primary concuerda borramos la row
     elif tabla == 'profesores':
         cur.execute(
             "DELETE FROM " + tabla + " WHERE dni = '" + primary + "';")  # Si la primary concuerda borramos la row
     elif tabla == 'cursos':
-        cur.execute("DELETE FROM " + tabla + " WHERE cod_curso = " + str(
-            primary) + ";")  # Si la primary concuerda borramos la row
+        cur.execute("DELETE FROM " + tabla + " WHERE nombre = '" + primary + "';")  # Si la primary concuerda borramos la row
 
     conn.commit()  # Commit
 
@@ -253,7 +242,7 @@ def selec_one_from_tabla(coon, tabla, primary):
         cur.execute(
             "SELECT " + tabla + ".* FROM " + tabla + " WHERE dni = '" + primary + "';")
     elif tabla == "cursos":
-        cur.execute("SELECT " + tabla + ".* FROM " + tabla + " WHERE cod_curso = " + str(primary) + ";")
+        cur.execute("SELECT " + tabla + ".* FROM " + tabla + " WHERE nombre = '" + primary + "';")
 
     out = cur.fetchall()  # Fetcheamos el resultado del cursor
 

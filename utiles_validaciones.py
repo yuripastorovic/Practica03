@@ -59,7 +59,7 @@ def check_index(indice):
     fallos = 0
     while fallos < 5:
         respuesta = entrada_teclado()
-        if respuesta.isnumeric() and 1 <= int(respuesta) <= ind_arreglado:
+        if respuesta.isnumeric() and 1 <= int(respuesta) < ind_arreglado:
             return int(respuesta) - 1
         else:
             print('Recuerde introducir un valor entre 1 y '+str(ind_arreglado))

@@ -276,7 +276,7 @@ def dame_uno(conn):
 
 def busqueda20(conn):
     fallos = 0
-    final = false
+    final = False
     while not final:
         alumno = dame_uno(conn)
         if alumno is not None:
