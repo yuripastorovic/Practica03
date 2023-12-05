@@ -64,7 +64,7 @@ def check_index(indice):
         else:
             print('Recuerde introducir un valor entre 1 y '+str(ind_arreglado))
             fallos = fails(fallos)
-            return None
+    return None
 
 
 # CHECKERS
@@ -217,10 +217,24 @@ def unique_dni(conn, comparacion):# comprueba que el dni del profesor es unico, 
             if profesor[1] == comparacion:
                 return False  #Si el dni ya esta returnea false
 
-        return True  #Si no encuentra el dni returnea true
-    else:
-        return True  #Si no hay profesores entonces cualquier dni vale
+    return True  #Si no hay profesores o no lo encuentra, entonces el dni vale
 
 
-def unique_nombre_completo(comparacion):# comprueba que el nombre completo del alumno es unico, que no esta en uso
-    return None
+def unique_nombre_completo(conn, nombre, apellido):# comprueba que el nombre completo del alumno es unico, que no esta en uso
+    """
+    Funcion que se asegura que no se repiten nombres completos nombre + apellido.
+    :param conn: la conexion de la bbdd
+    :param nombre: el nombre a comparar
+    :param apellido: el apellido a comparar
+    :return: True: si el nombre completo no existe
+    :return: False: si el nombre completo existe
+    """
+    datos = gestion_BBDD.selec_all_from_tabla(conn, "alumnos")
+    if len(datos) > 0:
+        for row in datos:
+            if row[1] == nombre and row[2] == apellido:
+                print("Ya existe un alumno con ese nombre y apellido")
+                return False  # El nombre completo existe
+
+    return True #Si no hay alumnos o no lo encuentra, entonces el nombre vale
+
