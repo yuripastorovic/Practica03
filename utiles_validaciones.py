@@ -2,7 +2,7 @@
 this is ustiles_validaciones
 """
 from datetime import datetime
-
+from configparser import ConfigParser
 import gestion_BBDD
 
 
@@ -205,9 +205,25 @@ def check_fecha():
 
 
 #UNIQUES
-
 def unique_nombre_curso(comparacion): # comprueba que el nombre del curso no esta ocupado ya si lo esta al nuevo le asigna +1
-    return None
+    """
+    Funcion que se asegura que no se repiten nombres de cursos, en ese caso adigna un numero
+    :param conn: la conexion de la bbdd
+    :param comparacion: el nombre de curso a comparar
+    :return: retorno: el nombre del curso revisado
+    """
+    datos = gestion_BBDD.selec_all_from_tabla(conn, "cursos")
+    contador = 1
+    if len(datos) > 0:
+        for row in datos:
+            if comparacion in row[1]:
+                contador+=1
+    if contador == 1:
+        return comparacion
+    else:
+        retorno = comparacion+' '+contador
+        print('El nombre ' + comparacion + ' ya esta en uso, se ha asignado como nombre: '+retorno)
+        return retorno
 
 
 def unique_dni(conn, comparacion):# comprueba que el dni del profesor es unico, que no esta en uso
@@ -243,4 +259,33 @@ def unique_nombre_completo(conn, nombre, apellido):# comprueba que el nombre com
                 return False  # El nombre completo existe
 
     return True #Si no hay alumnos o no lo encuentra, entonces el nombre vale
+
+
+#LECTURA
+def lectura():
+    """
+    Funcion que lee desde el fichero de configuracion: "config.txt" y devuelve un
+    diccionario de datos con los parametros necesarios para la conexion de BBDD
+    :return: datos: parametros necesarios para la conexion con BBDD
+    """
+
+    config = ConfigParser()
+    config.read('config.txt')
+    try:
+        host = (config.get('BBDD', 'host'))
+        user = (config.get('BBDD', 'user'))
+        password = (config.get('BBDD', 'password'))
+        port = (config.get('BBDD', 'port'))
+        datos = {'host': host, 'user': user, 'password': password, 'port': port}
+
+        return datos
+    except:
+        print("Imposible cargar datos desde el fichero de configuracion \"config.txt\"\nCargando configuracion por defecto")
+        host = 'localhost'
+        user = 'root'
+        password = '1234'
+        port = 3308
+        datos = {'host': host, 'user': user, 'password': password, 'port': port}
+        return datos
+
 

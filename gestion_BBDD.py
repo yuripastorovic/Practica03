@@ -3,17 +3,20 @@ this is gestion_BBDD
 """
 import pymysql
 from datetime import datetime
+import utiles_validaciones
 
 def mysqlconnect():
     """
     Funcion que crea y devuelve la conexion a la base de datos.
     :return: un objeto con la conexion a la BD.
     """
+    datos=utiles_validaciones.lectura()
+
     conn = pymysql.connect(
-        host='localhost',
-        user='root',
-        password='1234',
-        port=3308  # Puerto por defecto de MariaDB
+        host=datos['localhost'],
+        user=datos['user'],
+        password=datos['password'],
+        port=datos['port']
     )
 
     cur = conn.cursor()
