@@ -17,6 +17,7 @@ def alta(conn):
         nombre = None
         descripcion = None
         nombre = utiles_validaciones.check_campo("nombre", 25)
+        nombre = utiles_validaciones.unique_nombre_curso(conn, nombre)
         if nombre is not None:
             descripcion = utiles_validaciones.check_campo("descripcion", 50)
         if descripcion is not None:

@@ -205,7 +205,7 @@ def check_fecha():
 
 
 #UNIQUES
-def unique_nombre_curso(comparacion): # comprueba que el nombre del curso no esta ocupado ya si lo esta al nuevo le asigna +1
+def unique_nombre_curso(conn ,comparacion): # comprueba que el nombre del curso no esta ocupado ya si lo esta al nuevo le asigna +1
     """
     Funcion que se asegura que no se repiten nombres de cursos, en ese caso adigna un numero
     :param conn: la conexion de la bbdd
@@ -221,7 +221,7 @@ def unique_nombre_curso(comparacion): # comprueba que el nombre del curso no est
     if contador == 1:
         return comparacion
     else:
-        retorno = comparacion+' '+contador
+        retorno = comparacion+' '+str(contador)
         print('El nombre ' + comparacion + ' ya esta en uso, se ha asignado como nombre: '+retorno)
         return retorno
 
@@ -286,6 +286,7 @@ def lectura():
         password = '1234'
         port = 3308
         datos = {'host': host, 'user': user, 'password': password, 'port': port}
+
         return datos
 
 
