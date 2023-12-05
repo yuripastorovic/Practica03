@@ -59,11 +59,16 @@ def check_index(indice):
     fallos = 0
     while fallos < 5:
         respuesta = entrada_teclado()
-        if respuesta.isnumeric() and 1 <= int(respuesta) < ind_arreglado:
-            return int(respuesta) - 1
+        if respuesta.isnumeric(): 
+            if 1 <= int(respuesta) < ind_arreglado:
+                return int(respuesta) - 1
+            else:
+                print('Recuerde introducir un valor entre 1 y '+str(ind_arreglado))
+                fallos = fails(fallos)
         else:
-            print('Recuerde introducir un valor entre 1 y '+str(ind_arreglado))
+            print("No deje espacios vacios")
             fallos = fails(fallos)
+            
     return None
 
 
@@ -90,13 +95,14 @@ def check_campo(contexto, long):
                 long = int(long)
                 if 0 < len(campo) <= long:  #Verificamos la longitud del campo
                     print(contexto + " introducido con exito.")
-                    return campo
+                    return campo.capitalize()
                 else:
                     print(contexto + " tiene una longituz no valida, longitud maxima: " + long)
                     fallos = fails(fallos)
             else:
                 if len(campo) == 0:
                     print("El campo, " + contexto + " no puede estar vacio.")
+                    fallos = fails(fallos)
                 else:
                     print(contexto + " contiene caracteres no validos")
                     fallos = fails(fallos)

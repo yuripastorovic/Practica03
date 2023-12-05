@@ -40,7 +40,7 @@ def alta(conn):
 
         if not utiles_validaciones.confirmacion(
                 "Quieres tratar de dar de alta otro alumno?"):  # Preguntamos si quiere dar otro alumno de alta
-            done = True
+            salida = True
 
 def dame_uno(conn):
     if len(gestion_BBDD.selec_all_from_tabla(conn, "alumnos")) > 0:  # Asegurarnos de que existe algun alumno
@@ -56,9 +56,9 @@ def dame_uno(conn):
             alumno = gestion_BBDD.busqueda(conn, 'alumnos', 'nombre', candidato)  # Cogemos el alumno que corresponde con el nombre
             if len(alumno) == 0:
                 print('No se encontro ningun alumno con el nombre '+candidato)
-                return None, None
+                return None
             elif len(alumno) == 1:
-                return alumno[0], respuesta
+                return alumno[0]
             else:
                 print('Varios resultados.\nSeleccione el alumno que desea buscar:')
                 contador = 0
@@ -68,19 +68,19 @@ def dame_uno(conn):
                 eliminado = utiles_validaciones.check_index(len(alumno))
                 if eliminado is not None:
                     esgresado = alumno[(eliminado)]
-                    return esgresado, respuesta
+                    return esgresado
                 else:
                     print('Saliendo')
-                    return None, None
+                    return None
         elif respuesta == '2':
             print('Introduzca el apellido del alumno a buscar.')
             candidato = utiles_validaciones.check_campo('apellido', 25)
             alumno = gestion_BBDD.busqueda(conn, 'alumnos', 'apellido', candidato)  # Cogemos el alumno que corresponde con el apellido
             if len(alumno) == 0:
                 print('No se encontro ningun alumno con el apellido ' + candidato)
-                return None, None
+                return None
             elif len(alumno) == 1:
-                return alumno[0], respuesta
+                return alumno[0]
             else:
                 print('Varios resultados.\nSeleccione el alumno que desea buscar:')
                 contador = 0
@@ -90,10 +90,10 @@ def dame_uno(conn):
                 eliminado = utiles_validaciones.check_index(len(alumno))
                 if eliminado is not None:
                     esgresado = alumno[(eliminado)]
-                    return esgresado, respuesta
+                    return esgresado
                 else:
                     print('Saliendo')
-                    return None, None
+                    return None
         elif respuesta == '3':
             print('Introduzca el nombre completo del alumno a buscar.\nPrimero introduzca el nombre:')
             name = utiles_validaciones.check_campo('nombre completo, nombre', 25)
@@ -106,9 +106,9 @@ def dame_uno(conn):
                 nom = elementos[0]
                 ape = elementos[1]
                 print('No se encontro ningun alumno con el nombre completo: ' + nom+' '+ape)
-                return None, None
+                return None
             elif len(alumno) == 1:
-                return alumno[0], respuesta
+                return alumno[0]
             else:
                 print('Varios resultados.\nSeleccione el alumno que desea buscar:')
                 contador = 0
@@ -118,38 +118,41 @@ def dame_uno(conn):
                 eliminado = utiles_validaciones.check_index(len(alumno))
                 if eliminado is not None:
                     esgresado = alumno[(eliminado)]
-                    return esgresado, respuesta
+                    return esgresado
                 else:
                     print('Saliendo')
-                    return None, None
+                    return None
+        else:
+            print("Ciñase a numeros")
+            return None
     else:
         print("No hay alumnos que mostar\nSaliendo")
-        return None, None
+        return None
 
 def baja20(conn):
     print('Baja Alumno')
     finale = False
-    while not finale:
-        alumno, respuesta = dame_uno(conn)
-        if alumno is not None and respuesta is not None:
-            if utiles_validaciones.confirmacion(
-                    "Seguro que desea dar de baja a " +  alumno[1] + " " + alumno[2] + " del sistema?"):
-                gestion_BBDD.delete(conn, "alumnos", alumno[0])  # Mandamos el delete
-                print("Baja realizada con existo")
-                finale = True
-            else:
-                print("Alumno no encontrado")
-                fallos = utiles_validaciones.fails(fallos)
-            if fallos == 5:
-                print('Se ha superado el numero maximo de inetntos, volviendo al menu anterior')
-                finale = True
+    salida = False
+    while not salida:
+        while not finale:
+            alumno = dame_uno(conn)
+            if alumno is not None and respuesta is not None:
+                if utiles_validaciones.confirmacion("Seguro que desea dar de baja a " +  alumno[1] + " " + alumno[2] + " del sistema?"):
+                    gestion_BBDD.delete(conn, "alumnos", alumno[0])  # Mandamos el delete
+                    print("Baja realizada con existo")
+                    finale = True
+                else:
+                    print("Baja abortada.")
+                    finale = True
+            if not utiles_validaciones.confirmacion("Desea dar de baja otro alumno?"):
+                salida = True
 
 
 def busqueda20(conn):
     fallos = 0
     finale = False
     while not finale:
-        alumno, basura  = dame_uno(conn)
+        alumno = dame_uno(conn)
         if alumno is not None:
             print(alumno)
             finale = True
@@ -165,39 +168,40 @@ def modificar(conn):
     fallos = 0
     finale = False
     while not finale:
-        alumno, basura = dame_uno(conn)
+        alumno = dame_uno(conn)
         if alumno is not None:
             print("Estos son los datos del alumno")
             print(alumno)
             print("Que desea modificar:\n1. Nombre\n2. Apellido\n3. Telefono\n4. Direccion\n5.Fecha de nacimiento\n6. Modificar todos los datos\n0. Para salir")
             modif = utiles_validaciones.check_index(5)
-            if modif is None:
+            modif += 1
+            if modif is None or modif == 0:
                 print("Modificacion abortada")
                 finale = True
-            elif modif == "0":
-                finale = True
-                print("Modificacion abortada")
-            elif modif== "1":
+            elif modif == 1:
                 fallitos = 0
                 confirmado = False
                 while not confirmado:
                     print("Modificacion Nombre\nIntroduzca el nuevo Nombre:")
-                    name = utiles_validaciones.check_campo("nombre", 25)
-                    if name is not None and utiles_validaciones.unique_nombre_completo(conn, name, alumno[2]):
-                        if utiles_validaciones.confirmacion("Seguro que desea modificar al alumno " + alumno[1] + " " + alumno[2] + "?"):
-                            nuevo = {"nombre": name, "apellido": alumno[2], "telefono": alumno[3], "direccion": alumno[4], "fech_nacimiento": alumno[5]}
-                            gestion_BBDD.update(conn, "alumnos", nuevo, alumno[0])
-                            confirmado = True
-                        else:
-                            print("Modificacion abortada")
-                            confirmado = True
+                    name = utiles_validaciones.check_campo("nombre", 25) 
+                    print(alumno)                   
+                    if name is not None:
+                        if utiles_validaciones.unique_nombre_completo(conn, name, alumno[2]):
+                            if utiles_validaciones.confirmacion("Seguro que desea modificar al alumno " + alumno[1] + " " + alumno[2] + "?"):
+                                
+                                nuevo = {"nombre": name, "apellido": alumno[2], "telefono": alumno[3], "direccion": alumno[4], "fech_nacimiento": alumno[5]}
+                                gestion_BBDD.update(conn, "alumnos", nuevo, alumno[0])
+                                confirmado = True
+                            else:
+                                print("Modificacion abortada")
+                                confirmado = True
                     else:
                         fallitos = utiles_validaciones.fails(fallitos)
                     if fallitos == 5:
                         print("Modificacion abortada, se han superado el maximo de fallos\nVolviendo al menu anterior")
                         confirmado = True
 
-            elif modif== "2":
+            elif modif== 2:
                 fallitos = 0
                 confirmado = False
                 while not confirmado:
@@ -217,7 +221,7 @@ def modificar(conn):
                         print("Modificacion abortada, se han superado el maximo de fallos\nVolviendo al menu anterior")
                         confirmado = True
 
-            elif modif== "3":
+            elif modif== 3:
                 fallitos = 0
                 confirmado = False
                 while not confirmado:
@@ -237,7 +241,7 @@ def modificar(conn):
                         print("Modificacion abortada, se han superado el maximo de fallos\nVolviendo al menu anterior")
                         confirmado = True
 
-            elif modif== "4":
+            elif modif== 4:
                 fallitos = 0
                 confirmado = False
                 while not confirmado:
@@ -257,7 +261,7 @@ def modificar(conn):
                         print("Modificacion abortada, se han superado el maximo de fallos\nVolviendo al menu anterior")
                         confirmado = True
 
-            elif modif== "5":
+            elif modif== 5:
                 fallitos = 0
                 confirmado = False
                 while not confirmado:
@@ -277,7 +281,7 @@ def modificar(conn):
                     if fallitos == 5:
                         print("Modificacion abortada, se han superado el maximo de fallos\nVolviendo al menu anterior")
                         confirmado = True
-            elif modif == "6":
+            elif modif == 6:
                 print("Modificacion Completa\nIntroduzca el nuevo Nombre:")
                 fallos = 0
                 progreso = False

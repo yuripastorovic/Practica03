@@ -2,7 +2,7 @@
 this is gestion_BBDD
 """
 import pymysql
-
+from datetime import datetime
 
 def mysqlconnect():
     """
@@ -12,7 +12,8 @@ def mysqlconnect():
     conn = pymysql.connect(
         host='localhost',
         user='root',
-        port=3306  # Puerto por defecto de MariaDB
+        password='1234',
+        port=3308  # Puerto por defecto de MariaDB
     )
 
     cur = conn.cursor()
@@ -141,17 +142,19 @@ def update(conn, tabla, datos, primary):
     :return: None
     """
     cur = conn.cursor()
-
     if tabla == 'alumnos':  # Seleccionamos la tabla en la que vamos a hacer el update
-        cur.execute("UPDATE alumnos SET nombre = '" + datos['nombre'] + "' apellido = '" + datos['apellido'] + "' telefono = '" +
-            datos['telefono'] + "' direccion = '" + datos['direccion'] + "' fech_nacimiento = '" + datos['fech_nacimiento'] + "' WHERE num_exp = " + str(primary) + ";")
+        #print(type(datos["fech_nacimiento"]))
+        #fecha = datetime.date.strptime(str(datos["fech_nacimiento"]), "%Y-%m-%d").strftime("%Y-%m-%d")
+        
+        cur.execute("UPDATE alumnos SET nombre = '" + datos['nombre'] + "', apellido = '" + datos['apellido'] + "', telefono = '" +
+            datos['telefono'] + "', direccion = '" + datos['direccion'] + "', fech_nacimiento = '" + str(datos["fech_nacimiento"]) + "' WHERE num_exp = " + str(primary) + ";")
 
     elif tabla == 'profesores':
         cur.execute("UPDATE profesores SET dni = '" + datos['dni'] + "', nombre = '" + datos['nombre'] + "', direccion = '" + datos['direccion'] + "', telefono = '" +
             datos['telefono'] + "' WHERE dni = '" + primary + "';")  # Realizamos el update en base a la primary
 
     elif tabla == 'cursos':
-        cur.execute("UPDATE cursos SET cod_curso = '" + datos['cod_curso'] + "' nombre = '" + datos['nombre'] + "' descripcion = '" + datos['descripcion'] + "' WHERE nombre = '" + primary + "';")
+        cur.execute("UPDATE cursos SET nombre = '" + datos['nombre'] + "', descripcion = '" + datos['descripcion'] + "' WHERE nombre = '" + primary + "';")
 
     conn.commit()  # Commiteamos
 
