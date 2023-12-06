@@ -45,7 +45,6 @@ def alta(conn):
 
 def busqueda_unica(conn):
     if len(gestion_BBDD.selec_all_from_tabla(conn, "alumnos")) > 0:  # Asegurarnos de que existe algun alumno
-        print('Buscar Alumno')
         salida = False
         respuesta = None
         candidato = None
@@ -133,36 +132,43 @@ def busqueda_unica(conn):
 
 def baja(conn):
     print('Baja Alumno')
-    finale = False
-    salida = False
-    while not salida:
-        while not finale:
-            alumno = busqueda_unica(conn)
-            if alumno is not None:
-                if utiles_validaciones.confirmacion("Seguro que desea dar de baja a " + alumno[1] + " " + alumno[2] + " del sistema?"):
-                    gestion_BBDD.delete(conn, "alumnos", alumno[0])  # Mandamos el delete
-                    print("Baja realizada con existo")
-                    finale = True
-                else:
-                    print("Baja abortada.")
-                    finale = True
-            if not utiles_validaciones.confirmacion("Desea dar de baja otro alumno?"):
-                print("Voviendo al menu anterior")
-                salida = True
-
+    if len(gestion_BBDD.selec_all_from_tabla(conn, "alumnos")) > 0:  # Asegurarnos de que existe algun alumno
+        finale = False
+        salida = False
+        while not salida:
+            while not finale:
+                alumno = busqueda_unica(conn)
+                if alumno is not None:
+                    if utiles_validaciones.confirmacion("Seguro que desea dar de baja a " + alumno[1] + " " + alumno[2] + " del sistema?"):
+                        gestion_BBDD.delete(conn, "alumnos", alumno[0])  # Mandamos el delete
+                        print("Baja realizada con existo")
+                        finale = True
+                    else:
+                        print("Baja abortada.")
+                        finale = True
+                if not utiles_validaciones.confirmacion("Desea dar de baja otro alumno?"):
+                    print("Voviendo al menu anterior")
+                    salida = True
+    else:
+        print("No hay alumnos que mostar\nSaliendo")
 
 def busqueda(conn):
-    finale = False
-    salida = False
-    while not salida:
-        while not finale:
-            alumno = busqueda_unica(conn)
-            if alumno is not None:
-                print(alumno)
-                finale = True
-            if not utiles_validaciones.confirmacion("Desea dar de baja otro alumno?"):
-                print("Voviendo al menu anterior")
-                salida = True
+    print('Buscar Alumno')
+    if len(gestion_BBDD.selec_all_from_tabla(conn, "alumnos")) > 0:  # Asegurarnos de que existe algun alumno
+        finale = False
+        salida = False
+        while not salida:
+            while not finale:
+                alumno = busqueda_unica(conn)
+                if alumno is not None:
+                    print(alumno)
+                    finale = True
+                if not utiles_validaciones.confirmacion("Desea buscar otro alumno?"):
+                    print("Voviendo al menu anterior")
+                    salida = True
+    else:
+        print("No hay alumnos que mostar\nSaliendo")
+
 
 def modificar(conn):
     fallos = 0
