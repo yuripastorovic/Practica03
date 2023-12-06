@@ -32,6 +32,156 @@ def alta(conn):
             done = True
 
 
+def busqueda_unica(conn):
+    if len(gestion_BBDD.selec_all_from_tabla(conn, "alumnos")) > 0:  # Asegurarnos de que existe alumno alumno
+        print("Buscar Curso")
+        salida = False
+        print('Introduzca el nombre del curso')
+        candidato = utiles_validaciones.check_campo("nombre curso", 25)
+        if candidato is not None:
+            cursos= gestion_BBDD.busqueda(conn, "cursos", "", candidato)
+            if len(cursos) == 0:
+                print('No se encontro ningun curso con el nombre ' + candidato)
+                return None
+            elif len(cursos) == 1:
+                return cursos[0]
+            else:
+                print('Varios resultados.\nSeleccione el curso que desea buscar:')
+                contador = 0
+                for curs in cursos:
+                    contador += 1
+                    print(str(contador) + '. ' + curs[1] + " " + curs[2])
+                opcion = utiles_validaciones.check_index(len(cursos))
+                if opcion is not None:
+                    objetivo =cursos[opcion]
+                    return objetivo
+                else:
+                    print('Saliendo')
+                    return None
+        else:
+            print("Ha superado el numero maximo de errores permitidos")
+            return None
+    else:
+        print("No hay cursos que mostar\nSaliendo")
+        return None
+
+
+def busqueda(conn):
+    fallos = 0
+    finale = False
+    while not finale:
+        curso = busqueda_unica(conn)
+        if curso is not None:
+            print(curso)
+            finale = True
+        else:
+            fallos = utiles_validaciones.fails(fallos)
+        if fallos==5:
+            print("Curso no encontrado")
+            print('Se ha superado el numero maximo de inetntos, volviendo al menu anterior')
+            finale = True
+
+
+def baja(conn):
+    print('Baja Curso')
+    finale = False
+    salida = False
+    while not salida:
+        while not finale:
+            curso = busqueda_unica(conn)
+            if curso is not None:
+                if utiles_validaciones.confirmacion("Seguro que desea dar de baja el curso: " +  curso[1] + " del sistema?"):
+                    gestion_BBDD.delete(conn, "cursos", curso[0])  # Mandamos el delete
+                    print("Baja realizada con existo")
+                    finale = True
+                else:
+                    print("Baja abortada.")
+                    finale = True
+            if not utiles_validaciones.confirmacion("Desea dar de baja otro curso?"):
+                salida = True
+
+
+def modificar(conn):
+    print('Modificar Curso')
+    finale = False
+    salida = False
+    while not salida:
+        while not finale:
+            curso = busqueda_unica(conn)
+            if curso is not None:
+                print("Estos son los datos del curso")
+                print(curso)
+                print("Que desea modificar:\n1. Nombre\n2. Descripcion\n3. Modificar todos los datos\n0. Para salir")
+                modif = utiles_validaciones.check_index(4)
+                modif += 1 # Ajuste del metodo check_index
+                if modif is None or modif == 0:
+                    print("Modificacion abortada")
+                    finale = True
+                elif modif == 1:
+                    fallitos = 0
+                    confirmado = False
+                    while not confirmado:
+                        print("Modificacion Nombre\nIntroduzca el nuevo Nombre:")
+                        name = utiles_validaciones.check_campo("nombre", 25)
+                        if name is not None:
+                            if utiles_validaciones.unique_nombre_curso(conn, name):
+                                if utiles_validaciones.confirmacion("Seguro que desea modificar el curso " + curso[1] +"?"):
+                                    nuevo = {"nombre": name, "descripcion": curso[2]}
+                                    gestion_BBDD.update(conn, "cursos", nuevo, curso[0])
+                                    confirmado = True
+                                else:
+                                    print("Modificacion abortada")
+                                    confirmado = True
+                        else:
+                            print("Modificacion abortada, se han superado el maximo de fallos\nVolviendo al menu anterior")
+                            confirmado = True
+
+                elif modif == 2:
+                    fallitos = 0
+                    confirmado = False
+                    while not confirmado:
+                        print("Modificacion Descripcion\nIntroduzca la nueva Descripcion:")
+                        des = utiles_validaciones.check_campo("descripcion", 25)
+                        if des is not None:
+                            if utiles_validaciones.confirmacion("Seguro que desea modificar el curso " + curso[1] +"?"):
+                                nuevo = {"nombre": curso[1], "descripcion": des}
+                                gestion_BBDD.update(conn, "cursos", nuevo, curso[0])
+                                confirmado = True
+                            else:
+                                print("Modificacion abortada")
+                                confirmado = True
+                        else:
+                            print("Modificacion abortada, se han superado el maximo de fallos\nVolviendo al menu anterior")
+                            confirmado = True
+                elif modif == 3:
+                    fallitos = 0
+                    confirmado = False
+                    while not confirmado:
+                        print("Modificacion Nombre\nIntroduzca el nuevo Nombre:")
+                        name = utiles_validaciones.check_campo("nombre", 25)
+                        if name is not None:
+                            if utiles_validaciones.unique_nombre_curso(conn, name):
+                                print("Modificacion Descripcion\nIntroduzca la nueva Descripcion:")
+                                des = utiles_validaciones.check_campo("descripcion", 25)
+                                if des is not None:
+                                    if utiles_validaciones.confirmacion(
+                                            "Seguro que desea modificar el curso " + curso[1] + "?"):
+                                        nuevo = {"nombre": name, "descripcion": des}
+                                        gestion_BBDD.update(conn, "cursos", nuevo, curso[0])
+                                        confirmado = True
+                                    else:
+                                        print("Modificacion abortada")
+                                        confirmado = True
+                                else:
+                                    print(
+                                        "Modificacion abortada, se han superado el maximo de fallos\nVolviendo al menu anterior")
+                                    confirmado = True
+            else:
+                print("Modificacion abortada, se han superado el maximo de fallos\nVolviendo al menu anterior")
+                confirmado = True
+        if not utiles_validaciones.confirmacion("Desea modificar otro curso?"):
+                salida = True
+
 def buscar(conn):
     """
     Funcion que busca un curso en la bbdd
