@@ -124,7 +124,7 @@ def busqueda_unica(conn):
                     print('Saliendo')
                     return None
         else:
-            print("Ciñase a numeros")
+            print("Recuerde solo numeros")
             return None
     else:
         print("No hay alumnos que mostar\nSaliendo")
@@ -147,24 +147,22 @@ def baja(conn):
                     print("Baja abortada.")
                     finale = True
             if not utiles_validaciones.confirmacion("Desea dar de baja otro alumno?"):
+                print("Voviendo al menu anterior")
                 salida = True
 
 
 def busqueda(conn):
-    fallos = 0
     finale = False
-    while not finale:
-        alumno = busqueda_unica(conn)
-        if alumno is not None:
-            print(alumno)
-            finale = True
-        else:
-            fallos = utiles_validaciones.fails(fallos)
-        if fallos==5:
-            print("Alumno no encontrado")
-            print('Se ha superado el numero maximo de inetntos, volviendo al menu anterior')
-            finale = True
-
+    salida = False
+    while not salida:
+        while not finale:
+            alumno = busqueda_unica(conn)
+            if alumno is not None:
+                print(alumno)
+                finale = True
+            if not utiles_validaciones.confirmacion("Desea dar de baja otro alumno?"):
+                print("Voviendo al menu anterior")
+                salida = True
 
 def modificar(conn):
     fallos = 0
@@ -181,7 +179,6 @@ def modificar(conn):
                 print("Modificacion abortada")
                 finale = True
             elif modif == 1:
-                fallitos = 0
                 confirmado = False
                 while not confirmado:
                     print("Modificacion Nombre\nIntroduzca el nuevo Nombre:")
@@ -190,21 +187,13 @@ def modificar(conn):
                     if name is not None:
                         if utiles_validaciones.unique_nombre_completo(conn, name, alumno[2]):
                             if utiles_validaciones.confirmacion("Seguro que desea modificar al alumno " + alumno[1] + " " + alumno[2] + "?"):
-                                
                                 nuevo = {"nombre": name, "apellido": alumno[2], "telefono": alumno[3], "direccion": alumno[4], "fech_nacimiento": alumno[5]}
                                 gestion_BBDD.update(conn, "alumnos", nuevo, alumno[0])
                                 confirmado = True
                             else:
                                 print("Modificacion abortada")
                                 confirmado = True
-                    else:
-                        fallitos = utiles_validaciones.fails(fallitos)
-                    if fallitos == 5:
-                        print("Modificacion abortada, se han superado el maximo de fallos\nVolviendo al menu anterior")
-                        confirmado = True
-
             elif modif== 2:
-                fallitos = 0
                 confirmado = False
                 while not confirmado:
                     print("Modificacion Apellido\nIntroduzca el nuevo Apellido:")
@@ -217,14 +206,7 @@ def modificar(conn):
                         else:
                             print("Modificacion abortada")
                             confirmado = True
-                    else:
-                        fallitos = utiles_validaciones.fails(fallitos)
-                    if fallitos == 5:
-                        print("Modificacion abortada, se han superado el maximo de fallos\nVolviendo al menu anterior")
-                        confirmado = True
-
             elif modif== 3:
-                fallitos = 0
                 confirmado = False
                 while not confirmado:
                     print("Modificacion Telefono\nIntroduzca el nuevo Telefono:")
@@ -237,14 +219,7 @@ def modificar(conn):
                         else:
                             print("Modificacion abortada")
                             confirmado = True
-                    else:
-                        fallitos = utiles_validaciones.fails(fallitos)
-                    if fallitos == 5:
-                        print("Modificacion abortada, se han superado el maximo de fallos\nVolviendo al menu anterior")
-                        confirmado = True
-
             elif modif== 4:
-                fallitos = 0
                 confirmado = False
                 while not confirmado:
                     print("Modificacion Direccion\nIntroduzca la nueva Direccion:")
@@ -257,18 +232,11 @@ def modificar(conn):
                         else:
                             print("Modificacion abortada")
                             confirmado = True
-                    else:
-                        fallitos = utiles_validaciones.fails(fallitos)
-                    if fallitos == 5:
-                        print("Modificacion abortada, se han superado el maximo de fallos\nVolviendo al menu anterior")
-                        confirmado = True
-
             elif modif== 5:
-                fallitos = 0
                 confirmado = False
                 while not confirmado:
                     print("Modificacion Fecha de Nacimiento\nIntroduzca la nueva Fecha de Nacimiento:")
-                    fech = utiles_validaciones.check_campo("direccion", 50)
+                    fech = utiles_validaciones.check_fecha()
                     if fech is not None:
                         if utiles_validaciones.confirmacion(
                                 "Seguro que desea modificar al alumno " + alumno[1] + " " + alumno[2] + "?"):
@@ -278,11 +246,6 @@ def modificar(conn):
                         else:
                             print("Modificacion abortada")
                             confirmado = True
-                    else:
-                        fallitos = utiles_validaciones.fails(fallitos)
-                    if fallitos == 5:
-                        print("Modificacion abortada, se han superado el maximo de fallos\nVolviendo al menu anterior")
-                        confirmado = True
             elif modif == 6:
                 print("Modificacion Completa\nIntroduzca el nuevo Nombre:")
                 fallos = 0
@@ -295,7 +258,7 @@ def modificar(conn):
                         print("Nombre ya en uso")
                         fallos = utiles_validaciones.fails(fallos)
                     if name is None:
-                        fallos = utiles_validaciones.fails(fallos)
+                        fallos = 5
                     if fallos == 5:
                         print("Modificacion abortada, se han superado el maximo de fallos\nVolviendo al menu anterior")
                         confirmado = True
@@ -309,7 +272,7 @@ def modificar(conn):
                         if not utiles_validaciones.unique_nombre_completo(conn, name, alumno[2]):
                             fallos = utiles_validaciones.fails(fallos)
                         if ape is None:
-                            fallos = utiles_validaciones.fails(fallos)
+                            fallos = 5
                         if fallos == 5:
                             print("Modificacion abortada, se han superado el maximo de fallos\nVolviendo al menu anterior")
                             confirmado = True
@@ -318,28 +281,20 @@ def modificar(conn):
                     progreso = False
                     while not progreso:
                         telef = utiles_validaciones.check_telefono()
-                        if telef is None:
-                            fallos = utiles_validaciones.fails(fallos)
-                        if fallos == 5:
-                            print("Modificacion abortada, se han superado el maximo de fallos\nVolviendo al menu anterior")
-                            confirmado = True
+                        if telef is not None:
+                            fallos=0
                 if fallos < 5:
-                    fallos=0
                     progreso = False
                     while not progreso:
                         dir = utiles_validaciones.check_campo("direccion", 50)
-                        if dir is None:
-                            fallos = utiles_validaciones.fails(fallos)
-                        if fallos == 5:
-                            print("Modificacion abortada, se han superado el maximo de fallos\nVolviendo al menu anterior")
-                            confirmado = True
+                        if dir is not None:
+                            fallos = 0
                 if fallos < 5:
-                    fallos=0
                     progreso = False
                     while not progreso:
                         fech = utiles_validaciones.check_fecha()
                         if fech is None:
-                            fallos = utiles_validaciones.fails(fallos)
+                            fallos=5
                         if fallos == 5:
                             print("Modificacion abortada, se han superado el maximo de fallos\nVolviendo al menu anterior")
                             confirmado = True
