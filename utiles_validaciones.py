@@ -226,6 +226,22 @@ def unique_nombre_curso(conn ,comparacion): # comprueba que el nombre del curso 
         return retorno
 
 
+def comprobar_nombre_curso(conn, comparacion):
+    """
+    Funcion que te asegura si un curso existe en la base de datos
+    :param conn: la conxion a la bbdd
+    :param comparacion: true si el nombre no esta, false si lo esta
+    :return:
+    """
+    cursos = gestion_BBDD.selec_all_from_tabla(conn, "cursos")
+    if len(cursos) > 0:
+        for curso in cursos:
+            if curso[1] == comparacion:
+                return False  #Si el nombre ya esta returnea false
+
+    return True  #Si el nombre no esta returnea false
+
+
 def unique_dni(conn, comparacion):# comprueba que el dni del profesor es unico, que no esta en uso
     """
     Funcion que se asegura que del dni introducido no se repite.

@@ -42,6 +42,7 @@ def alta(conn):
                 "Quieres tratar de dar de alta otro alumno?"):  # Preguntamos si quiere dar otro alumno de alta
             salida = True
 
+
 def busqueda_unica(conn):
     if len(gestion_BBDD.selec_all_from_tabla(conn, "alumnos")) > 0:  # Asegurarnos de que existe algun alumno
         print('Buscar Alumno')
@@ -129,6 +130,7 @@ def busqueda_unica(conn):
         print("No hay alumnos que mostar\nSaliendo")
         return None
 
+
 def baja(conn):
     print('Baja Alumno')
     finale = False
@@ -136,8 +138,8 @@ def baja(conn):
     while not salida:
         while not finale:
             alumno = busqueda_unica(conn)
-            if alumno is not None and respuesta is not None:
-                if utiles_validaciones.confirmacion("Seguro que desea dar de baja a " +  alumno[1] + " " + alumno[2] + " del sistema?"):
+            if alumno is not None:
+                if utiles_validaciones.confirmacion("Seguro que desea dar de baja a " + alumno[1] + " " + alumno[2] + " del sistema?"):
                     gestion_BBDD.delete(conn, "alumnos", alumno[0])  # Mandamos el delete
                     print("Baja realizada con existo")
                     finale = True
@@ -363,13 +365,13 @@ def modificar(conn):
 def mostrar_todos(conn):
     if len(gestion_BBDD.selec_all_from_tabla(conn, "alumnos")) > 0:  # Asegurarnos de que existe algun alumno
         print("Mostrar todos los alumnos:")
-        alumnos = selec_all_from_tabla(conn, "alumnos")
+        alumnos = gestion_BBDD.selec_all_from_tabla(conn, "alumnos")
         for row in alumnos:  #Recorremos las row de profesores mostrando los profesores
             print("ID: ", row[0])
             print("Nombre: ", row[1])
             print("Apellido: ", row[2])
             print("Telefono: ", row[3])
             print("Direccion: ", row[4])
-            print("Fecha de nacimineto: ", row[5],"\n")
+            print("Fecha de nacimineto: ", row[5], "\n")
     else:
         print("No existen alumnos que mostrar")

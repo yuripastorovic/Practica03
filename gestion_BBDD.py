@@ -117,8 +117,7 @@ def insert(conn, tabla, datos):
         cur.execute("INSERT INTO " + tabla + " (nombre, descripcion) "
             "VALUES ('" + datos["nombre"] + "','" + datos["descripcion"] + "');")
     elif tabla == "cursos_profesores":  # El insert de crusos-profesores sacando los datos de un diccionario
-        cur.execute(
-            "INSERT INTO " + tabla + " (id_profesor, cod_curso) VALUES ('" + datos["id_profesor"] + "','" + datos["cod_curso"] + "');")
+        cur.execute("INSERT INTO " + tabla + " (id_profesor, cod_curso) VALUES ('" + datos["id_profesor"] + "','" + datos["cod_curso"] + "');")
     elif tabla == "cursos_alumnos":  # El insert de cursos-alumno sacando los datos de un diccionario
         cur.execute("INSERT INTO " + tabla + " (num_exp, cod_curso) VALUES ('" + datos["num_exp"] + "','" + datos["cod_curso"] + "');")
 
