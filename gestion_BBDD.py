@@ -194,7 +194,7 @@ def selec_all_from_tabla(conn, tabla):
     return out  # Lo devolvemos
 
 
-def busqueda(coon, tabla, contexto, parametro):
+def busqueda(conn, tabla, contexto, parametro):
     """
     Funcion que devuelve los campos de una row de una tabla que se desea buscar
     :param coon: la conexion a la bbdd
@@ -202,7 +202,7 @@ def busqueda(coon, tabla, contexto, parametro):
     :param primary: la primary key de la row que se desea mostrar
     :return: una tupla con los campos de la row
     """
-    cur = coon.cursor()  # Generamos cursor
+    cur = conn.cursor()  # Generamos cursor
 
     if tabla == 'alumnos':  # Elegimos la tabla en la que hacer un select
         if contexto == 'doble':
