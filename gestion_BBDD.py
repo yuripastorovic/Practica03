@@ -117,9 +117,9 @@ def insert(conn, tabla, datos):
         cur.execute("INSERT INTO " + tabla + " (nombre, descripcion) "
             "VALUES ('" + datos["nombre"] + "','" + datos["descripcion"] + "');")
     elif tabla == "cursos_profesores":  # El insert de crusos-profesores sacando los datos de un diccionario
-        cur.execute("INSERT INTO " + tabla + " (id_profesor, cod_curso) VALUES ('" + datos["id_profesor"] + "','" + datos["cod_curso"] + "');")
+        cur.execute("INSERT INTO " + tabla + " (id_profesor, cod_curso) VALUES (" + datos["id_profesor"] + "," + datos["cod_curso"] + ");")
     elif tabla == "cursos_alumnos":  # El insert de cursos-alumno sacando los datos de un diccionario
-        cur.execute("INSERT INTO " + tabla + " (num_exp, cod_curso) VALUES ('" + datos["num_exp"] + "','" + datos["cod_curso"] + "');")
+        cur.execute("INSERT INTO " + tabla + " (num_exp, cod_curso) VALUES (" + datos["num_exp"] + "," + datos["cod_curso"] + ");")
 
     conn.commit()  # Commit
 
@@ -173,6 +173,10 @@ def delete(conn, tabla, primary):
             "DELETE FROM " + tabla + " WHERE dni = '" + primary + "';")  # Si la primary concuerda borramos la row
     elif tabla == 'cursos':
         cur.execute("DELETE FROM " + tabla + " WHERE nombre = '" + primary + "';")  # Si la primary concuerda borramos la row
+    elif tabla == "cursos-profesores":
+        cur.execute("DELETE FROM cursos_profesores WHERE id_profesor = " + primary["id_profesor"] + " AND cod_curso =" + primary["cod_curso"] + ";")
+    elif tabla == "cursos-alumnos":
+        cur.execute("DELETE FROM cursos_alumnos WHERE num_exp = " + primary["num_exp"] + " AND cod_curso =" + primary["cod_curso"] + ";")
 
     conn.commit()  # Commit
 
@@ -237,11 +241,53 @@ def selec_one_from_tabla(coon, tabla, primary):
     if tabla == "alumnos":  # Elegimos la tabla en la que hacer un select
         cur.execute("SELECT " + tabla + ".* FROM " + tabla + " WHERE num_exp = " + str(primary) + ";")
     elif tabla == "profesores":
-        cur.execute(
-            "SELECT " + tabla + ".* FROM " + tabla + " WHERE dni = '" + primary + "';")
+        cur.execute("SELECT " + tabla + ".* FROM " + tabla + " WHERE dni = '" + primary + "';")
     elif tabla == "cursos":
         cur.execute("SELECT " + tabla + ".* FROM " + tabla + " WHERE nombre = '" + primary + "';")
 
     out = cur.fetchall()  # Fetcheamos el resultado del cursor
 
     return out  # Devolvemos la tupla
+
+
+def select_con_relaciones(conn, tabla,  prof_alum, codcurso):
+
+    cur = conn.cursor()
+
+    if tabla == "profesores":
+        cur.execute("SELECT profesores.*, cursos.nombre FROM profesores, cursos, cursos_profesores WHERE profesores.id_profesor = " + prof_alum + "AND profesores.id_profesor = cursos_profesores.id_profesor AND cursos.cod_curso = " + codcurso + " AND cursos.cod_curso = cursos_profesores.cod_curso;")
+
+    elif tabla == "alumnos":
+        print("a")
+
+
+def existe_relacion(conn, tabla, primary):
+    """
+    Funcion de apoyos que busca en las tablas intermendias si existe relacion entre alumno-curso o profesor curso
+    :param conn: conexion con BBDD
+    :param tabla: tabla sobre la que miarar
+    :param primary: diccionario de datos a comparar
+    :return: True: existen coincidencias
+    :return: False: no existen coincidencias
+    """
+    cur = conn.cursor()  # Generamos cursor
+    if tabla == "cursos_alumnos":
+        cur.execute("SELECT cursos_alumnos.* FROM cursos_alumnos WHERE num_exp = " + primary['num_exp'] + " AND cod_curso =" + primary['cod_curso'] + ";")
+    else:
+        cur.execute("SELECT cursos_profesores.* FROM cursos_profesores WHERE num_exp = " + primary['id_profesor'] + " AND cod_curso =" + primary['cod_curso'] + ";")
+    out = cur.fetchall()
+    if len(out) == 1:
+        return True
+    else:
+        return False
+
+
+def tiene_profesor(conn, primary):
+    cur = conn.cursor()
+    cur.execute("SELECT cursos.*, profesores.nombre, profesor.id_profesor FROM cursos INNER JOIN cursos_profesores ON cursos.cod_curso = cursos_profesores.cod_curso INNER JOIN profesores on cursos_profesores.id_profesor = profesores.id_profesor WHERE cursos.cod_curso = " + primary + ";")
+    out = cur.fetchall()
+    if len(out) > 0:
+        return True, out[0][4]
+    else:
+        return False
+

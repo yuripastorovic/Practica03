@@ -6,19 +6,41 @@ import utiles_validaciones
 
 
 def matricular_profesor_curso(conn):
+    """
+    Funcion que crea la relacion entre cursos y profesores.
+    :param conn: la conexion a la bbdd
+    :return: None
+    """
     done = False
     while not done:
         print("Relacionar profesores y cursos.")
         print("Introduzca el dni del profesor que desea relacionar.")
-        nomb_curso = None
+        curso = None
         dni = utiles_validaciones.check_dni()
         if dni is not None and not utiles_validaciones.unique_dni(conn, dni):
-            nomb_curso = utiles_validaciones.check_campo("Nombre", 25)
-        if nomb_curso is not None and not utiles_validaciones.comprobar_nombre_curso(conn, nomb_curso):
+            curso = gestion_curso.busqueda_unica(conn)
+        if curso is not None:
 
+            profesor = gestion_BBDD.selec_one_from_tabla(conn, "profesores", dni)
+            datos = {"id_profesor": profesor[0], "cod_curso": curso[0]}
+            if gestion_BBDD.existe_relacion(conn, "cursos_profesores", datos):
+                print(profesor[2] + " ya impartia " + curso[1])
+            else:
+                tiene_prof, id_prof_ant = gestion_BBDD.tiene_profesor(conn, curso[0])
+                if tiene_prof:
+                    if utiles_validaciones.confirmacion(curso[1] + " ya tiene profesor, desea sustituirlo por " + profesor[2] + "?"):
+                        para_borrar = {"id_profesor": id_prof_ant, "cod_curso": curso[0]}
+                        gestion_BBDD.delete(conn, "cursos_profesores", para_borrar)
+                        gestion_BBDD.insert(conn, "cursos_profesores", datos)
+                    else:
+                        print("Relacion abortada")
+                else:
+                    if utiles_validaciones.confirmacion("Seguro que desea que " + profesor[2] + " imparta " + curso[1] + "?"):
+                        gestion_BBDD.insert(conn, "cursos_profesores", datos)
+                    else:
+                        print("Relacion abortada")
 
-
-        if not utiles_validaciones.confirmacion("Desea relacionar otro profesor con otro curso?")
+        if not utiles_validaciones.confirmacion("Desea relacionar otro profesor con otro curso?"):
             done = True
 
 
