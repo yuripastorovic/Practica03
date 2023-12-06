@@ -117,9 +117,9 @@ def insert(conn, tabla, datos):
         cur.execute("INSERT INTO " + tabla + " (nombre, descripcion) "
             "VALUES ('" + datos["nombre"] + "','" + datos["descripcion"] + "');")
     elif tabla == "cursos_profesores":  # El insert de crusos-profesores sacando los datos de un diccionario
-        cur.execute("INSERT INTO " + tabla + " (id_profesor, cod_curso) VALUES (" + datos["id_profesor"] + "," + datos["cod_curso"] + ");")
+        cur.execute("INSERT INTO " + tabla + " (id_profesor, cod_curso) VALUES (" + str(datos["id_profesor"]) + "," + str(datos["cod_curso"]) + ");")
     elif tabla == "cursos_alumnos":  # El insert de cursos-alumno sacando los datos de un diccionario
-        cur.execute("INSERT INTO " + tabla + " (num_exp, cod_curso) VALUES (" + datos["num_exp"] + "," + datos["cod_curso"] + ");")
+        cur.execute("INSERT INTO " + tabla + " (num_exp, cod_curso) VALUES (" + str(datos["num_exp"]) + "," + str(datos["cod_curso"]) + ");")
 
     conn.commit()  # Commit
 
@@ -173,10 +173,10 @@ def delete(conn, tabla, primary):
             "DELETE FROM " + tabla + " WHERE dni = '" + primary + "';")  # Si la primary concuerda borramos la row
     elif tabla == 'cursos':
         cur.execute("DELETE FROM " + tabla + " WHERE nombre = '" + primary + "';")  # Si la primary concuerda borramos la row
-    elif tabla == "cursos-profesores":
-        cur.execute("DELETE FROM cursos_profesores WHERE id_profesor = " + primary["id_profesor"] + " AND cod_curso =" + primary["cod_curso"] + ";")
-    elif tabla == "cursos-alumnos":
-        cur.execute("DELETE FROM cursos_alumnos WHERE num_exp = " + primary["num_exp"] + " AND cod_curso =" + primary["cod_curso"] + ";")
+    elif tabla == "cursos_profesores":
+        cur.execute("DELETE FROM cursos_profesores WHERE id_profesor = " + str(primary["id_profesor"]) + " AND cod_curso =" + str(primary["cod_curso"]) + ";")
+    elif tabla == "cursos_alumnos":
+        cur.execute("DELETE FROM cursos_alumnos WHERE num_exp = " + str(primary["num_exp"]) + " AND cod_curso =" + str(primary["cod_curso"]) + ";")
 
     conn.commit()  # Commit
 
@@ -272,9 +272,9 @@ def existe_relacion(conn, tabla, primary):
     """
     cur = conn.cursor()  # Generamos cursor
     if tabla == "cursos_alumnos":
-        cur.execute("SELECT cursos_alumnos.* FROM cursos_alumnos WHERE num_exp = " + primary['num_exp'] + " AND cod_curso =" + primary['cod_curso'] + ";")
+        cur.execute("SELECT cursos_alumnos.* FROM cursos_alumnos WHERE num_exp = " + str(primary['num_exp']) + " AND cod_curso =" + str(primary['cod_curso']) + ";")
     else:
-        cur.execute("SELECT cursos_profesores.* FROM cursos_profesores WHERE num_exp = " + primary['id_profesor'] + " AND cod_curso =" + primary['cod_curso'] + ";")
+        cur.execute("SELECT cursos_profesores.* FROM cursos_profesores WHERE id_profesor = " + str(primary['id_profesor']) + " AND cod_curso =" + str(primary['cod_curso']) + ";")
     out = cur.fetchall()
     if len(out) == 1:
         return True
@@ -284,10 +284,7 @@ def existe_relacion(conn, tabla, primary):
 
 def tiene_profesor(conn, primary):
     cur = conn.cursor()
-    cur.execute("SELECT cursos.*, profesores.nombre, profesor.id_profesor FROM cursos INNER JOIN cursos_profesores ON cursos.cod_curso = cursos_profesores.cod_curso INNER JOIN profesores on cursos_profesores.id_profesor = profesores.id_profesor WHERE cursos.cod_curso = " + primary + ";")
+    cur.execute("SELECT cursos.*, profesores.nombre, profesores.id_profesor FROM cursos INNER JOIN cursos_profesores ON cursos.cod_curso = cursos_profesores.cod_curso INNER JOIN profesores on cursos_profesores.id_profesor = profesores.id_profesor WHERE cursos.cod_curso = " + str(primary) + ";")
     out = cur.fetchall()
-    if len(out) > 0:
-        return True, out[0][4]
-    else:
-        return False
+    return out
 

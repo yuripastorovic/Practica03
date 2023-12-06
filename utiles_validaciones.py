@@ -127,7 +127,7 @@ def check_dni():
                 if dni[0:8].isnumeric():  # Es cerrado por la izquierda abierto por la derecha
                     if dni[8].isalpha():  # Solo coge el noveno caracter
                         print("DNI introducido con exito.")
-                        return dni
+                        return dni.upper()
                     else:
                         print("El ultimo caracter debe tratarse de una letra.")
                         fallo = fails(fallo)
