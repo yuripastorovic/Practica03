@@ -82,14 +82,27 @@ def buscar(conn):
             print("Introduzca el DNI del profesor que desea buscar.")
             dni = utiles_validaciones.check_dni()  #Pedimos dni valido
             if dni is not None:
-                profesor = gestion_BBDD.selec_one_from_tabla(conn, "profesores", dni)  #Encontramos al profesor
+                profesor = gestion_BBDD.selec_join(conn, "profesores", dni)  #Encontramos al profesor
                 if len(profesor) > 0:  #Si lo encuentra lo muestra
-                    print("ID: ", profesor[0][0])
-                    print("Nombre: ", profesor[0][2])
-                    print("DNI: ", profesor[0][1])
-                    print("Descripcion: ", profesor[0][3])
-                    print("Telefono: ", profesor[0][4])
-                    print()
+                    if len(profesor[0]) == 5:
+                        print("ID: ", profesor[0][0])
+                        print("Nombre: ", profesor[0][2])
+                        print("DNI: ", profesor[0][1])
+                        print("Descripcion: ", profesor[0][3])
+                        print("Telefono: ", profesor[0][4])
+                        print()
+
+                    else:
+                        cursos = "| "
+                        for i in range(0, len(profesor)):
+                            cursos = cursos + profesor[i][5] + " | "
+                        print("ID: ", profesor[0][0])
+                        print("Nombre: ", profesor[0][2])
+                        print("DNI: ", profesor[0][1])
+                        print("Descripcion: ", profesor[0][3])
+                        print("Telefono: ", profesor[0][4])
+                        print("cursos:", cursos)
+                        print()
 
                 else:
                     print("No se encontro ningun profesor con ese DNI.")
@@ -109,14 +122,27 @@ def mostrar_todos(conn):
     if len(gestion_BBDD.selec_all_from_tabla(conn, "profesores")) > 0:  #Si hay profesores en la BBDD
         print("Mostrar todos los profesores:")
 
-        profesores = gestion_BBDD.selec_all_from_tabla(conn, "profesores")  #Pilla todos los profesores
+        profesores = gestion_BBDD.select_all_left_join(conn, "profesores")  #Pilla todos los profesores
+        profesor = ""
         for row in profesores:  #Recorremos las row de profesores mostrando los profesores
-            print("ID: ", row[0])
-            print("Nombre: ", row[2])
-            print("DNI: ", row[1])
-            print("Descripcion: ", row[3])
-            print("Telefono: ", row[4])
-            print()
+            if row[0] != profesor:
+                print()
+                profesor = row[0]
+                print("-"*20)
+                print("ID: ", row[0])
+                print("Nombre: ", row[2])
+                print("DNI: ", row[1])
+                print("Descripcion: ", row[3])
+                print("Telefono: ", row[4])
+                if row[5] is not None:
+                    print("Cursos: " + row[5], end="")
+                else:
+                    print()
+            else:
+                if row[5] is not None:
+                    print(" " +row[5], end="")
+                else:
+                    print()
 
     else:  #Si no hay profesores
         print("No hay profesores en el centro.")
@@ -145,6 +171,7 @@ def modificar(conn):
                         print("2. Modificar DNI.")
                         print("3. Modificar direccion.")
                         print("4. Modificar telefono.")
+                        print("5. Modificar todos los campos.")
                         print("0. Salir.")
                         elec = input("Seleccione opcion: ")
                         if elec == "1":  #Cambio de nombre. Se pide nuevo nombre, si se acepta la confirmacion se cambia en el diccionario y se manda a uodatear.
@@ -192,6 +219,30 @@ def modificar(conn):
 
                             else:  #Se sale
                                 print("Modificacion cancelada")
+                        elif elec == "5":
+                            nombre = None
+                            direccion = None
+                            telefono = None  #Las varaibles
+                            dni2 = utiles_validaciones.check_dni()  #Comprobamos que los campos son validos
+                            if dni2 is not None and utiles_validaciones.unique_dni(conn, dni2):
+                                nombre = utiles_validaciones.check_campo("nombre", 25)
+                            else:
+                                print("El dni ya pertenecia a otro profesor.")
+                            if nombre is not None:
+                                direccion = utiles_validaciones.check_campo("direccion", 50)
+                            if direccion is not None:
+                                telefono = utiles_validaciones.check_telefono()
+                            if telefono is not None:
+
+                                if utiles_validaciones.confirmacion("Seguro que desea modificar todos los campos de " + datos["nombre"] + "?"):
+                                    dni = dni2
+                                    datos = {"dni": dni2, "nombre": nombre, "direccion": direccion, "telefono": telefono}  #Pasamos los datos a un diccionario
+                                    gestion_BBDD.update(conn, "profesores", datos, dni)
+                                    print("Modificacion realizada exitosamente")
+
+                                else:
+                                    print("Modificacion cancelada")
+
                         elif elec == "0":
                             print("Saliendo del menu de modificacion.")
 

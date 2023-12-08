@@ -194,7 +194,7 @@ def selec_all_from_tabla(conn, tabla):
 
     cur.execute("SELECT " + tabla + ".* FROM " + tabla + ";")  # Seleccionamos tod el contenido de una tabla
     out = cur.fetchall()  # Lo fetchamos
-
+    cur.close()
     return out  # Lo devolvemos
 
 
@@ -221,10 +221,10 @@ def busqueda(conn, tabla, contexto, parametro):
     elif tabla == 'profesores':
         cur.execute('SELECT ' + tabla + '.* FROM ' + tabla + ' WHERE ' + contexto + ' = \'' + parametro + '\';')  # esto esta mal la primary no es el DNI
     elif tabla == 'cursos':
-        cur.execute('SELECT ' + tabla + '.* FROM ' + tabla + ' WHERE nombre = \'' + parametro + '\';')
+        cur.execute('SELECT ' + tabla + '.* FROM ' + tabla + ' WHERE nombre LIKE \'' + parametro + '%\';')
 
     out = cur.fetchall()  # Fetcheamos el resultado del cursor
-
+    cur.close()
     return out  # Devolvemos la tupla
 
 
@@ -246,19 +246,8 @@ def selec_one_from_tabla(coon, tabla, primary):
         cur.execute("SELECT " + tabla + ".* FROM " + tabla + " WHERE nombre = '" + primary + "';")
 
     out = cur.fetchall()  # Fetcheamos el resultado del cursor
-
+    cur.close()
     return out  # Devolvemos la tupla
-
-
-def select_con_relaciones(conn, tabla,  prof_alum, codcurso):
-
-    cur = conn.cursor()
-
-    if tabla == "profesores":
-        cur.execute("SELECT profesores.*, cursos.nombre FROM profesores, cursos, cursos_profesores WHERE profesores.id_profesor = " + prof_alum + "AND profesores.id_profesor = cursos_profesores.id_profesor AND cursos.cod_curso = " + codcurso + " AND cursos.cod_curso = cursos_profesores.cod_curso;")
-
-    elif tabla == "alumnos":
-        print("a")
 
 
 def existe_relacion(conn, tabla, primary):
@@ -276,6 +265,7 @@ def existe_relacion(conn, tabla, primary):
     else:
         cur.execute("SELECT cursos_profesores.* FROM cursos_profesores WHERE id_profesor = " + str(primary['id_profesor']) + " AND cod_curso =" + str(primary['cod_curso']) + ";")
     out = cur.fetchall()
+    cur.close()
     if len(out) == 1:
         return True
     else:
@@ -286,5 +276,67 @@ def tiene_profesor(conn, primary):
     cur = conn.cursor()
     cur.execute("SELECT cursos.*, profesores.nombre, profesores.id_profesor FROM cursos INNER JOIN cursos_profesores ON cursos.cod_curso = cursos_profesores.cod_curso INNER JOIN profesores on cursos_profesores.id_profesor = profesores.id_profesor WHERE cursos.cod_curso = " + str(primary) + ";")
     out = cur.fetchall()
+    cur.close()
+    return out
+
+
+def selec_join(conn, tabla, primary):
+    """
+    Funcion que devuelve los campos de una row de una tabla que se desea buscar
+    :param coon: la conexion a la bbdd
+    :param tabla: la tabla que contiene la row
+    :param primary: la primary key de la row que se desea mostrar
+    :return: una tupla con los campos de la row
+    """
+    cur = conn.cursor()  # Generamos cursor
+    out = ()
+
+    if tabla == "alumnos":  # Elegimos la tabla en la que hacer un select
+        cur.execute("SELECT " + tabla + ".*, cursos.nombre FROM " + tabla + ", cursos, cursos_alumnos WHERE alumnos.num_exp = " + str(primary) + " AND alumnos.num_exp = cursos_alumnos.num_exp AND cursos.cod_curso = cursos_alumnos.cod_curso;")
+        out = cur.fetchall()  # Fetcheamos el resultado del cursor
+        if len(out) == 0:
+            cur.execute("SELECT " + tabla + ".* FROM " + tabla + " WHERE num_exp = " + str(primary) + ";")
+            out = cur.fetchall()  # Fetcheamos el resultado del cursor
+
+
+    elif tabla == "profesores":
+        cur.execute("SELECT " + tabla + ".*, cursos.nombre FROM " + tabla + ", cursos_profesores, cursos WHERE profesores.dni = '" + primary + "' AND profesores.id_profesor = cursos_profesores.id_profesor AND cursos_profesores.cod_curso = cursos.cod_curso;")
+        out = cur.fetchall()  # Fetcheamos el resultado del cursor
+        if len(out) == 0:
+            cur.execute("SELECT " + tabla + ".* FROM " + tabla + " WHERE dni = '" + primary + "';")
+            out = cur.fetchall()  # Fetcheamos el resultado del cursor
+
+
+    elif tabla == "cursos":
+        cur.execute("SELECT " + tabla + ".*, profesores.nombre, alumnos.nombre, alumnos.apellido FROM " + tabla + ", cursos_alumnos, cursos_profesores, profesores, alumnos WHERE cursos.nombre = '" + primary + "' AND cursos.cod_curso = cursos_profesores.cod_curso"
+            "AND cursos_alumnos.cod_curso = cursos.cod_curso AND cursos_profesores.id_profesor = profesores.id_profesor AND alumnos.num_exp = cursos_alumnos.num_exp;")
+        out = cur.fetchall()  # Fetcheamos el resultado del cursor
+        if len(out) == 0:
+            cur.execute("SELECT " + tabla + ".*, profesores.nombre FROM cursos, profesores, cursos_profesores WHERE cursos.nombre = '" + primary + "' AND cursos.cod_curso = cursos_profesores.cod_curso AND profesores.id_profesor = cursos_profesores.id_profesor;")
+            out = cur.fetchall()  # Fetcheamos el resultado del cursor
+            if len(out) == 0:
+                cur.execute("SELECT " + tabla + ".*, alumnos.nombre, alumnos.apellido FROM cursos, alumnos, cursos_alumnos WHERE cursos.nombre = '" + primary + "' AND cursos.cod_curso = cursos_alumnos.cod_curso AND cursos_alumnos.num_exp = alumnos.num_exp;")
+                out = cur.fetchall()  # Fetcheamos el resultado del cursor
+                if len(out) == 0:
+                    cur.execute("SELECT " + tabla + ".* FROM " + tabla + " WHERE nombre = '" + primary + "';")
+                    out = cur.fetchall()  # Fetcheamos el resultado del cursor
+
+    return out  # Devolvemos la tupla
+
+
+def select_all_left_join(conn, tabla):
+    cur = conn.cursor()  # Generamos cursor
+    out = ()
+
+    if tabla == "profesores":
+        cur.execute("SELECT profesores.*, cursos.nombre FROM profesores LEFT JOIN cursos_profesores ON profesores.id_profesor = cursos_profesores.id_profesor LEFT JOIN cursos ON cursos.cod_curso = cursos_profesores.cod_curso;")
+        out = cur.fetchall()
+    elif tabla == "alumnos":
+        cur.execute("SELECT alumnos.*, cursos.nombre FROM alumnos LEFT JOIN cursos_alumnos ON alumnos.num_exp = cursos_alumnos.num_exp LEFT JOIN cursos ON cursos.cod_curso = cursos_alumnos.cod_curso;")
+        out = cur.fetchall()
+    elif tabla == "cursos":
+        cur.execute("SELECT cursos.*, profesores.nombre, alumnos.nombre, alumnos.apellido FROM cursos LEFT JOIN cursos_profesores ON cursos_profesores.cod_curso = cursos.cod_curso LEFT JOIN cursos_alumnos ON cursos_alumnos.cod_curso = cursos.cod_curso LEFT JOIN profesores ON profesores.id_profesor = cursos_profesores.id_profesor LEFT JOIN alumnos ON alumnos.num_exp = cursos_alumnos.num_exp;")
+        out = cur.fetchall()
+
     return out
 
