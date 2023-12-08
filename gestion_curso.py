@@ -274,14 +274,52 @@ def mostrar_todos(conn):
     :param conn: la conexion a la bbdd
     :return: None
     """
-    cursos = gestion_BBDD.selec_all_from_tabla(conn, "cursos")
+    cursos = gestion_BBDD.select_all_left_join(conn, "cursos")
     if len(cursos) > 0:
         print("Mostrar todos los cursos:")
+        nombre_curso = ""
+        cont = 0;
         for curso in cursos:
-            print("Codigo del curso: ", curso[0])
-            print("Nombre: ", curso[1])
-            print("Descripcion:", curso[2])
-            print()
+            if nombre_curso != curso[1] and cont != 0:
+                print()
+            if len(curso) == 3:
+                print("Codigo del curso: ", curso[0])
+                print("Nombre: ", curso[1])
+                print("Descripcion:", curso[2])
 
+            elif len(curso) == 4:
+                print("Codigo del curso: ", curso[0])
+                print("Nombre: ", curso[1])
+                print("Descripcion:", curso[2])
+                print("Profesor:", curso[3])
+
+            elif len(curso) == 5:
+                if nombre_curso != curso[1]:
+                    nombre_curso = curso[1]
+                    print()
+                    print("Codigo del curso: ", curso[0])
+                    print("Nombre: ", curso[1])
+                    print("Descripcion:", curso[2])
+                    if curso[3] is not None and curso[4] is not None:
+                        print("Alumno/os:" + curso[3] + "_" + curso[3], end="")
+                else:
+                    if curso[3] is not None and curso[4] is not None:
+                        print(" | " + curso[3] + "_" + curso[4], end="")
+
+            elif len(curso) == 6:
+                if nombre_curso != curso[1]:
+                    nombre_curso = curso[1]
+                    print()
+                    print("Codigo del curso: ", curso[0])
+                    print("Nombre: ", curso[1])
+                    print("Descripcion:", curso[2])
+                    if curso[3] is not None:
+                        print("Profesor:", curso[3])
+                    if curso[4] is not None and curso[5] is not None:
+                        print("Alumno/os:" + curso[4] + "_" + curso[5], end="")
+                else:
+                    if curso[4] is not None and curso[5] is not None:
+                        print(" | " + curso[4] + "_" + curso[5], end="")
+            cont += 1
     else:
         print("No hay cursos en la base de datos.")
