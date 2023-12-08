@@ -308,8 +308,7 @@ def selec_join(conn, tabla, primary):
 
 
     elif tabla == "cursos":
-        cur.execute("SELECT " + tabla + ".*, profesores.nombre, alumnos.nombre, alumnos.apellido FROM " + tabla + ", cursos_alumnos, cursos_profesores, profesores, alumnos WHERE cursos.nombre = '" + primary + "' AND cursos.cod_curso = cursos_profesores.cod_curso"
-            "AND cursos_alumnos.cod_curso = cursos.cod_curso AND cursos_profesores.id_profesor = profesores.id_profesor AND alumnos.num_exp = cursos_alumnos.num_exp;")
+        cur.execute("SELECT " + tabla + ".*, profesores.nombre, alumnos.nombre, alumnos.apellido FROM " + tabla + ", cursos_alumnos, cursos_profesores, profesores, alumnos WHERE cursos.nombre = '" + primary + "' AND cursos.cod_curso = cursos_profesores.cod_curso AND cursos_alumnos.cod_curso = cursos.cod_curso AND cursos_profesores.id_profesor = profesores.id_profesor AND alumnos.num_exp = cursos_alumnos.num_exp;")
         out = cur.fetchall()  # Fetcheamos el resultado del cursor
         if len(out) == 0:
             cur.execute("SELECT " + tabla + ".*, profesores.nombre FROM cursos, profesores, cursos_profesores WHERE cursos.nombre = '" + primary + "' AND cursos.cod_curso = cursos_profesores.cod_curso AND profesores.id_profesor = cursos_profesores.id_profesor;")

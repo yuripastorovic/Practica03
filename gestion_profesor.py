@@ -235,9 +235,9 @@ def modificar(conn):
                             if telefono is not None:
 
                                 if utiles_validaciones.confirmacion("Seguro que desea modificar todos los campos de " + datos["nombre"] + "?"):
-                                    dni = dni2
                                     datos = {"dni": dni2, "nombre": nombre, "direccion": direccion, "telefono": telefono}  #Pasamos los datos a un diccionario
                                     gestion_BBDD.update(conn, "profesores", datos, dni)
+                                    dni = dni2
                                     print("Modificacion realizada exitosamente")
 
                                 else:
