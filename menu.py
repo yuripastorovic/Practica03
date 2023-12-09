@@ -41,7 +41,7 @@ def menu_profesor(conn):
     """
     salida = False
     while not salida:
-        respuesta = input("--MENU ALUMNO--\nSeleccione una opcion:\n1. Alta\n2. Baja\n3. Buscar\n4. Modificar\n5. Mostrar Todos\n------\n0. Volver a Main Menu\n")
+        respuesta = input("--MENU PROFESOR--\nSeleccione una opcion:\n1. Alta\n2. Baja\n3. Buscar\n4. Modificar\n5. Mostrar Todos\n------\n0. Volver a Main Menu\n")
         if respuesta is not None:
             if respuesta == "0":
                 salida = True
@@ -59,7 +59,7 @@ def menu_profesor(conn):
             print("\nIntroduzca una opcion valida\n")
 
 
-def menu_curso(con):
+def menu_curso(conn):
     """
     Funcion que gestiona el menu curso
     :param conn: Conexion con BBDD
@@ -67,7 +67,7 @@ def menu_curso(con):
     """
     salida = False
     while not salida:
-        respuesta = input("--MENU ALUMNO--\nSeleccione una opcion:\n1. Alta\n2. Baja\n3. Buscar\n4. Modificar\n5. Mostrar Todos\n------\n0. Volver a Main Menu\n")
+        respuesta = input("--MENU CURSO--\nSeleccione una opcion:\n1. Alta\n2. Baja\n3. Buscar\n4. Modificar\n5. Mostrar Todos\n------\n0. Volver a Main Menu\n")
         if respuesta is not None:
             if respuesta == "0":
                 salida = True
@@ -93,7 +93,7 @@ def menu_relaciones(conn):
     """
     salida = False
     while not salida:
-        respuesta = input("--MENU ALUMNO--\nSeleccione una opcion:\n1. Asinar Profesor a un curso\n2. Desasinar Profesor a un curso\n3. Matricular Alumno a un curso\n4. Desmatricular Alumno de un curso\n------\n0. Volver a Main Menu\n")
+        respuesta = input("--MENU RELACIONES--\nSeleccione una opcion:\n1. Asinar Profesor a un curso\n2. Desasinar Profesor a un curso\n3. Matricular Alumno a un curso\n4. Desmatricular Alumno de un curso\n------\n0. Volver a Main Menu\n")
         if respuesta is not None:
             if respuesta == "0":
                 salida = True
@@ -130,6 +130,6 @@ def main_menu(conn):
             if respuesta == "3":
                 menu_curso(conn)
             if respuesta == "4":
-                menu_curso(conn)
+                menu_relaciones(conn)
         else:
             print("\nIntroduzca una opcion valida\n")

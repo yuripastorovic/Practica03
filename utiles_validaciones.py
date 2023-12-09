@@ -187,21 +187,25 @@ def check_fecha():
         print("Recuerde el formato de la fecha es DD-MM-YYYY")
         fecha = entrada_teclado("fecha")
         if fecha is not None:
-            datos = fecha.split("-")
-            if datos[0].isnumeric() and datos[1].isnumeric() and datos[0].isnumeric():
-                dia = int(datos[0])
-                mes = int(datos[1])
-                year = int(datos[2])
-                if ((mes in [1, 3, 5, 7, 8, 10, 12] and 1 <= dia <= 31 and 1990 <= year <= 2023) or
-                    (mes in [4, 6, 9, 11] and 1 <= dia <= 30 and 1990 <= year <= 2023) or
-                    (mes == 2 and 1 <= dia <= 28 and 1990 <= year <= 2023)):
+            if fecha.count("-") == 2:
+                datos = fecha.split("-")
+                if datos[0].isnumeric() and datos[1].isnumeric() and datos[0].isnumeric():
+                    dia = int(datos[0])
+                    mes = int(datos[1])
+                    year = int(datos[2])
+                    if ((mes in [1, 3, 5, 7, 8, 10, 12] and 1 <= dia <= 31 and 1990 <= year <= 2023) or
+                        (mes in [4, 6, 9, 11] and 1 <= dia <= 30 and 1990 <= year <= 2023) or
+                        (mes == 2 and 1 <= dia <= 28 and 1990 <= year <= 2023)):
 
-                    print("Fecha introducida con exito")
-                    return datetime.strptime(str(dia)+"/"+str(mes)+"/"+str(year), "%d/%m/%Y").strftime("%Y-%m-%d")
+                        print("Fecha introducida con exito")
+                        return datetime.strptime(str(dia)+"/"+str(mes)+"/"+str(year), "%d/%m/%Y").strftime("%Y-%m-%d")
+                    else:
+                        print("No se corresponde con una fecha valida: para mas info--> https://es.wikipedia.org/wiki/Mes")
                 else:
-                    print("No se corresponde con una fecha valida: para mas info--> https://es.wikipedia.org/wiki/Mes")
+                    print("Formato de fecha no valido")
+                    fallos = fails(fallos)
             else:
-                print("Formato de fecha no valido")
+                print("Formato de fecha no valido, recuerde respetar los guiones.")
                 fallos = fails(fallos)
         else:
             fallos = fails(fallos)
