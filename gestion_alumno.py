@@ -53,75 +53,81 @@ def busqueda_unica(conn):
         if respuesta == '1':
             print('Introduzca el nombre del alumno a buscar.')
             candidato= utiles_validaciones.check_campo('nombre', 25)
-            alumno = gestion_BBDD.busqueda(conn, 'alumnos', 'nombre', candidato)  # Cogemos el alumno que corresponde con el nombre
-            if len(alumno) == 0:
-                print('No se encontro ningun alumno con el nombre '+candidato)
-                return None
-            elif len(alumno) == 1:
-                return alumno[0]
-            else:
-                print('Varios resultados.\nSeleccione el alumno que desea buscar:')
-                contador = 0
-                for alum in alumno:
-                    contador += 1
-                    print(str(contador)+'. '+alum[1]+" "+alum[2])
-                eliminado = utiles_validaciones.check_index(len(alumno))
-                if eliminado is not None:
-                    esgresado = alumno[(eliminado)]
-                    return esgresado
-                else:
-                    print('Saliendo')
+            if candidato is not None:
+                alumno = gestion_BBDD.busqueda(conn, 'alumnos', 'nombre', candidato)  # Cogemos el alumno que corresponde con el nombre
+                if len(alumno) == 0:
+                    print('No se encontro ningun alumno con el nombre '+candidato)
                     return None
+                elif len(alumno) == 1:
+                    return alumno[0]
+                else:
+                    print('Varios resultados.\nSeleccione el alumno que desea buscar:')
+                    contador = 0
+                    for alum in alumno:
+                        contador += 1
+                        print(str(contador)+'. '+alum[1]+" "+alum[2])
+                    eliminado = utiles_validaciones.check_index(len(alumno))
+                    if eliminado is not None:
+                        esgresado = alumno[(eliminado)]
+                        return esgresado
+                    else:
+                        print('Saliendo')
+                        return None
         elif respuesta == '2':
             print('Introduzca el apellido del alumno a buscar.')
             candidato = utiles_validaciones.check_campo('apellido', 25)
-            alumno = gestion_BBDD.busqueda(conn, 'alumnos', 'apellido', candidato)  # Cogemos el alumno que corresponde con el apellido
-            if len(alumno) == 0:
-                print('No se encontro ningun alumno con el apellido ' + candidato)
-                return None
-            elif len(alumno) == 1:
-                return alumno[0]
-            else:
-                print('Varios resultados.\nSeleccione el alumno que desea buscar:')
-                contador = 0
-                for alum in alumno:
-                    contador += 1
-                    print(str(contador) + '. ' + alum[1] + " " + alum[2])
-                eliminado = utiles_validaciones.check_index(len(alumno))
-                if eliminado is not None:
-                    esgresado = alumno[(eliminado)]
-                    return esgresado
-                else:
-                    print('Saliendo')
+            if candidato is not None:
+                alumno = gestion_BBDD.busqueda(conn, 'alumnos', 'apellido', candidato)  # Cogemos el alumno que corresponde con el apellido
+                if len(alumno) == 0:
+                    print('No se encontro ningun alumno con el apellido ' + candidato)
                     return None
+                elif len(alumno) == 1:
+                    return alumno[0]
+                else:
+                    print('Varios resultados.\nSeleccione el alumno que desea buscar:')
+                    contador = 0
+                    for alum in alumno:
+                        contador += 1
+                        print(str(contador) + '. ' + alum[1] + " " + alum[2])
+                        eliminado = utiles_validaciones.check_index(len(alumno))
+                        if eliminado is not None:
+                            esgresado = alumno[(eliminado)]
+                            return esgresado
+                        else:
+                            print('Saliendo')
+                            return None
         elif respuesta == '3':
             print('Introduzca el nombre completo del alumno a buscar.\nPrimero introduzca el nombre:')
+            apellido = None
             name = utiles_validaciones.check_campo('nombre completo, nombre', 25)
-            print('Introduzca el nombre completo del alumno a buscar.\nAhora introduzca el apellido:')
-            apellido = utiles_validaciones.check_campo('nombre completo, apellido', 25)
-            candidato=name+'&&'+apellido
-            alumno = gestion_BBDD.busqueda(conn, 'alumnos', 'doble', candidato)  # Cogemos el alumno que corresponde con el nombre+apellido
-            if len(alumno) == 0:
-                elementos = candidato.split('&&')
-                nom = elementos[0]
-                ape = elementos[1]
-                print('No se encontro ningun alumno con el nombre completo: ' + nom+' '+ape)
-                return None
-            elif len(alumno) == 1:
-                return alumno[0]
-            else:
-                print('Varios resultados.\nSeleccione el alumno que desea buscar:')
-                contador = 0
-                for alum in alumno:
-                    contador += 1
-                    print(str(contador) + '. ' + alum[1] + " " + alum[2])
-                eliminado = utiles_validaciones.check_index(len(alumno))
-                if eliminado is not None:
-                    esgresado = alumno[(eliminado)]
-                    return esgresado
-                else:
-                    print('Saliendo')
+            if name is not None:
+                print('Introduzca el nombre completo del alumno a buscar.\nAhora introduzca el apellido:')
+                apellido = utiles_validaciones.check_campo('nombre completo, apellido', 25)
+            if apellido is not None:
+                candidato=name+'&&'+apellido
+            if candidato is not None:
+                alumno = gestion_BBDD.busqueda(conn, 'alumnos', 'doble', candidato)  # Cogemos el alumno que corresponde con el nombre+apellido
+                if len(alumno) == 0:
+                    elementos = candidato.split('&&')
+                    nom = elementos[0]
+                    ape = elementos[1]
+                    print('No se encontro ningun alumno con el nombre completo: ' + nom+' '+ape)
                     return None
+                elif len(alumno) == 1:
+                    return alumno[0]
+                else:
+                    print('Varios resultados.\nSeleccione el alumno que desea buscar:')
+                    contador = 0
+                    for alum in alumno:
+                        contador += 1
+                        print(str(contador) + '. ' + alum[1] + " " + alum[2])
+                    eliminado = utiles_validaciones.check_index(len(alumno))
+                    if eliminado is not None:
+                        esgresado = alumno[(eliminado)]
+                        return esgresado
+                    else:
+                        print('Saliendo')
+                        return None
         else:
             print("Recuerde solo numeros")
             return None
@@ -152,20 +158,26 @@ def baja(conn):
     else:
         print("No hay alumnos que mostar\nSaliendo")
 
+
 def busqueda(conn):
     print('Buscar Alumno')
     if len(gestion_BBDD.selec_all_from_tabla(conn, "alumnos")) > 0:  # Asegurarnos de que existe algun alumno
-        finale = False
         salida = False
         while not salida:
+            finale = False
             while not finale:
                 alumno = busqueda_unica(conn)
                 if alumno is not None:
-                    print(alumno)
+                    print("ID: ", alumno[0])
+                    print("Nombre: ", alumno[1])
+                    print("Apellido: ", alumno[2])
+                    print("Telefono: ", alumno[3])
+                    print("Direccion: ", alumno[4])
+                    print("Fecha de nacimineto: ", alumno[5], "\n")
                     finale = True
-                if not utiles_validaciones.confirmacion("Desea buscar otro alumno?"):
-                    print("Voviendo al menu anterior")
-                    salida = True
+            if not utiles_validaciones.confirmacion("Desea buscar otro alumno?"):
+                print("Voviendo al menu anterior")
+                salida = True
     else:
         print("No hay alumnos que mostar\nSaliendo")
 

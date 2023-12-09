@@ -58,8 +58,8 @@ def baja(conn):
                         gestion_BBDD.delete(conn, "profesores", dni)  #Mandamos el delete
                         print("Baja realizada con existo")
 
-                    else:
-                        print("No se encontro ningun profesor con ese DNI.")
+                else:
+                    print("No se encontro ningun profesor con ese DNI.")
 
             if len(gestion_BBDD.selec_all_from_tabla(conn, "profesores")) > 0 and not utiles_validaciones.confirmacion("Desea dar de baja otro profesor"):  #Si quedan profesores y no quiere borrar mas salimos
                 done = True
@@ -141,9 +141,7 @@ def mostrar_todos(conn):
             else:
                 if row[5] is not None:
                     print(" " +row[5], end="")
-                else:
-                    print()
-
+        print()
     else:  #Si no hay profesores
         print("No hay profesores en el centro.")
 

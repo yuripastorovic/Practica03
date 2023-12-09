@@ -33,7 +33,7 @@ def alta(conn):
 
 
 def busqueda_unica(conn):
-    if len(gestion_BBDD.selec_all_from_tabla(conn, "alumnos")) > 0:  # Asegurarnos de que existe alumno alumno
+    if len(gestion_BBDD.selec_all_from_tabla(conn, "cursos")) > 0:  # Asegurarnos de que existe alumno alumno
         print("Buscar Curso")
         salida = False
         print('Introduzca el nombre del curso')
@@ -67,7 +67,7 @@ def busqueda_unica(conn):
 
 
 def busqueda(conn):
-    if gestion_BBDD.selec_all_from_tabla(conn, "cursos") > 0:
+    if len(gestion_BBDD.selec_all_from_tabla(conn, "cursos")) > 0:
         fallos = 0
         finale = False
         while not finale:
@@ -86,46 +86,45 @@ def busqueda(conn):
 
 
 def baja(conn):
-    if gestion_BBDD.selec_all_from_tabla(conn, "cursos"):
+    if len(gestion_BBDD.selec_all_from_tabla(conn, "cursos")) > 0:
         print('Baja Curso')
         finale = False
         salida = False
         while not salida:
-            while not finale:
-                curso = busqueda_unica(conn)
-                if curso is not None:
-                    if utiles_validaciones.confirmacion("Seguro que desea dar de baja el curso: " +  curso[1] + " del sistema?"):
-                        gestion_BBDD.delete(conn, "cursos", curso[0])  # Mandamos el delete
+            curso = busqueda_unica(conn)
+            if curso is not None:
+                while not finale:
+                    if utiles_validaciones.confirmacion("Seguro que desea dar de baja el curso: " + curso[1] + " del sistema?"):
+                        gestion_BBDD.delete(conn, "cursos", curso[1])  # Mandamos el delete
                         print("Baja realizada con existo")
                         finale = True
                     else:
                         print("Baja abortada.")
                         finale = True
-                if not utiles_validaciones.confirmacion("Desea dar de baja otro curso?"):
-                    salida = True
+            if not utiles_validaciones.confirmacion("Desea dar de baja otro curso?"):
+                salida = True
     else:
         print("No hay cursos en el sistema.")
 
 
 def modificar(conn):
-    if gestion_BBDD.selec_all_from_tabla(conn, "cursos") > 0:
+    if len(gestion_BBDD.selec_all_from_tabla(conn, "cursos")) > 0:
         print('Modificar Curso')
         finale = False
         salida = False
         while not salida:
-            while not finale:
-                curso = busqueda_unica(conn)
-                if curso is not None:
-                    print("Estos son los datos del curso")
-                    print(curso)
+            curso = busqueda_unica(conn)
+            print("Estos son los datos del curso")
+            print(curso)
+            fallos = 0;
+            if curso is not None:
+                while not finale:
                     print("Que desea modificar:\n1. Nombre\n2. Descripcion\n3. Modificar todos los datos\n0. Para salir")
-                    modif = utiles_validaciones.check_index(4)
-                    modif += 1 # Ajuste del metodo check_index
-                    if modif is None or modif == 0:
+                    modif = input()
+                    if modif == "0":
                         print("Modificacion abortada")
                         finale = True
-                    elif modif == 1:
-                        fallitos = 0
+                    elif modif == "1":
                         confirmado = False
                         while not confirmado:
                             print("Modificacion Nombre\nIntroduzca el nuevo Nombre:")
@@ -134,7 +133,7 @@ def modificar(conn):
                                 if utiles_validaciones.unique_nombre_curso(conn, name):
                                     if utiles_validaciones.confirmacion("Seguro que desea modificar el curso " + curso[1] +"?"):
                                         nuevo = {"nombre": name, "descripcion": curso[2]}
-                                        gestion_BBDD.update(conn, "cursos", nuevo, curso[0])
+                                        gestion_BBDD.update(conn, "cursos", nuevo, curso[1])
                                         confirmado = True
                                     else:
                                         print("Modificacion abortada")
@@ -142,9 +141,7 @@ def modificar(conn):
                             else:
                                 print("Modificacion abortada, se han superado el maximo de fallos\nVolviendo al menu anterior")
                                 confirmado = True
-
-                    elif modif == 2:
-                        fallitos = 0
+                    elif modif == "2":
                         confirmado = False
                         while not confirmado:
                             print("Modificacion Descripcion\nIntroduzca la nueva Descripcion:")
@@ -152,7 +149,7 @@ def modificar(conn):
                             if des is not None:
                                 if utiles_validaciones.confirmacion("Seguro que desea modificar el curso " + curso[1] +"?"):
                                     nuevo = {"nombre": curso[1], "descripcion": des}
-                                    gestion_BBDD.update(conn, "cursos", nuevo, curso[0])
+                                    gestion_BBDD.update(conn, "cursos", nuevo, curso[1])
                                     confirmado = True
                                 else:
                                     print("Modificacion abortada")
@@ -160,8 +157,7 @@ def modificar(conn):
                             else:
                                 print("Modificacion abortada, se han superado el maximo de fallos\nVolviendo al menu anterior")
                                 confirmado = True
-                    elif modif == 3:
-                        fallitos = 0
+                    elif modif == "3":
                         confirmado = False
                         while not confirmado:
                             print("Modificacion Nombre\nIntroduzca el nuevo Nombre:")
@@ -169,27 +165,30 @@ def modificar(conn):
                             if name is not None:
                                 if utiles_validaciones.unique_nombre_curso(conn, name):
                                     print("Modificacion Descripcion\nIntroduzca la nueva Descripcion:")
-                                    des = utiles_validaciones.check_campo("descripcion", 25)
+                                    des = utiles_validaciones.check_campo("descripcion", 50)
                                     if des is not None:
-                                        if utiles_validaciones.confirmacion(
-                                                "Seguro que desea modificar el curso " + curso[1] + "?"):
+                                        if utiles_validaciones.confirmacion("Seguro que desea modificar el curso " + curso[1] + "?"):
                                             nuevo = {"nombre": name, "descripcion": des}
-                                            gestion_BBDD.update(conn, "cursos", nuevo, curso[0])
+                                            gestion_BBDD.update(conn, "cursos", nuevo, curso[1])
                                             confirmado = True
                                         else:
                                             print("Modificacion abortada")
                                             confirmado = True
                                     else:
-                                        print(
-                                            "Modificacion abortada, se han superado el maximo de fallos\nVolviendo al menu anterior")
+                                        print("Modificacion abortada, se han superado el maximo de fallos\nVolviendo al menu anterior")
                                         confirmado = True
-                else:
-                    print("Modificacion abortada, se han superado el maximo de fallos\nVolviendo al menu anterior")
-                    confirmado = True
+                                else:
+                                    print("Modificacion abortada, se han superado el maximo de fallos\nVolviendo al menu anterior")
+                                    confirmado = True
+                    else:
+                        print("Opcion no valida")
+                        fallos = utiles_validaciones.fails(fallos)
+                        if fallos == 5:
+                            finale = True
             if not utiles_validaciones.confirmacion("Desea modificar otro curso?"):
-                    salida = True
-        else:
-            print("No hay cursos en el sistema.")
+                salida = True
+    else:
+        print("No hay cursos en el sistema.")
 
 
 def buscar(conn):
@@ -321,5 +320,6 @@ def mostrar_todos(conn):
                     if curso[4] is not None and curso[5] is not None:
                         print(" | " + curso[4] + "_" + curso[5], end="")
             cont += 1
+        print()
     else:
         print("No hay cursos en la base de datos.")

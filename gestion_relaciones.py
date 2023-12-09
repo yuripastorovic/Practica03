@@ -73,3 +73,43 @@ def desmatricular_profesor_curso(conn):
 
         if not utiles_validaciones.confirmacion("Desea desrelacionar otro profesor con otro curso?"):  #Esto para desrealacionar mas de uno
             done = True
+
+
+def matricular_curso_alumno(conn):
+    salida = False
+    while not salida:
+        print("Relacionar alumnos y cursos.")
+        alumno = gestion_alumno.busqueda_unica(conn)
+        if alumno is not None:
+            curso= gestion_curso.busqueda_unica(conn)
+            if curso is not None:
+                if utiles_validaciones.confirmacion("Desea matricuar al alumno "+alumno[1]+", al curso "+curso[1]+"?"):
+                    datos ={"num_exp": alumno[0], "cod_curso": curso[0]}
+                    gestion_BBDD.insert(conn, "cursos_alumnos",datos)
+                else:
+                    print("Matriculacion abortada")
+        if not utiles_validaciones.confirmacion("Desea matricular otro alumno?"):
+            print("Voviendo al menu anterior")
+            salida = True
+
+
+def desmatricular_curso_alumno(conn):
+    salida = False
+    while not salida:
+        print("Relacionar alumnos y cursos.")
+        alumno = gestion_alumno.busqueda_unica(conn)
+        if alumno is not None:
+            curso = gestion_curso.busqueda_unica(conn)
+            if curso is not None:
+                aux = {"num_exp": alumno[0], "cod_curso":curso[0]}
+                if gestion_BBDD.existe_relacion(conn, "cursos_alumnos", aux):
+                    if utiles_validaciones.confirmacion("Desea desmatricuar al alumno " + alumno[1] + ", al curso " + curso[1] + "?"):
+                        datos = {"num_exp": alumno[0], "cod_curso": curso[0]}
+                        gestion_BBDD.delete(conn, "cursos_alumnos", datos)
+                    else:
+                        print("Desmatriculacion abortada")
+                else:
+                    print("El alumno " + alumno[1] + " no pertenece al curso "+curso[1])
+        if not utiles_validaciones.confirmacion("Desea dematricular otro alumno?"):
+            print("Voviendo al menu anterior")
+            salida = True

@@ -97,7 +97,7 @@ def check_campo(contexto, long):
                     print(contexto + " introducido con exito.")
                     return campo.capitalize()
                 else:
-                    print(contexto + " tiene una longituz no valida, longitud maxima: " + long)
+                    print(contexto + " tiene una longitud no valida, longitud maxima: " + str(long))
                     fallos = fails(fallos)
             else:
                 if len(campo) == 0:

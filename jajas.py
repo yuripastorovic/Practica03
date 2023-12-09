@@ -6,6 +6,7 @@ import gestion_curso
 import utiles_validaciones
 import gestion_alumno
 
+
 def add_alum_curso(conn, alumno, curso):
     cur = conn.cursor()  # Cursor
     cur.execute("INSERT INTO cursos_alumnos (num_exp, cod_curso) VALUES ('" + alumno+ "','" + curso +  "');")
@@ -36,6 +37,8 @@ def existe_relacion(conn, tabla, primary):
         return True
     else:
         return False
+
+
 def selec_one_from_tabla(coon, tabla, primary):
     """
     Funcion que devuelve los campos de una row de una tabla que se desea buscar
@@ -59,36 +62,3 @@ def selec_one_from_tabla(coon, tabla, primary):
     return out  # Devolvemos la tupla
 
 
-def matricular_curso_alumno(conn):
-    salida = False
-    while not salida:
-        print("Relacionar alumnos y cursos.")
-        alumno = gestion_alumno.busqueda_unica()
-        if alumno is not None:
-            curso= gestion_curso.busqueda_unica()
-            if curso is not None:
-                if utiles_validaciones.confirmacion("Desea matricuar al alumno "+alumno[1]+", al curso "+curso[1]+"?"):
-                    datos ={"num_exp": alumno[0], "cod_curso": curso[0]}
-                    gestion_BBDD.insert(conn, "cursos_alumnos",datos)
-                else:
-                    print("Matriculacion abortada")
-        if not utiles_validaciones.confirmacion("Desea matricular otro alumno?"):
-            print("Voviendo al menu anterior")
-            salida = True
-
-def desmatricular_curso_alumno(conn):
-    salida = False
-    while not salida:
-        print("Relacionar alumnos y cursos.")
-        alumno = gestion_alumno.busqueda_unica()
-        if alumno is not None:
-            curso = gestion_curso.busqueda_unica()
-            if curso is not None:
-                if utiles_validaciones.confirmacion("Desea desmatricuar al alumno " + alumno[1] + ", al curso " + curso[1] + "?"):
-                    datos = {"num_exp": alumno[0], "cod_curso": curso[0]}
-                    gestion_BBDD.delete(conn, "cursos_alumnos", datos)
-                else:
-                    print("Desmatriculacion abortada")
-        if not utiles_validaciones.confirmacion("Desea dematricular otro alumno?"):
-            print("Voviendo al menu anterior")
-            salida = True

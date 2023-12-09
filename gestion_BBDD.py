@@ -117,9 +117,15 @@ def insert(conn, tabla, datos):
         cur.execute("INSERT INTO " + tabla + " (nombre, descripcion) "
             "VALUES ('" + datos["nombre"] + "','" + datos["descripcion"] + "');")
     elif tabla == "cursos_profesores":  # El insert de crusos-profesores sacando los datos de un diccionario
-        cur.execute("INSERT INTO " + tabla + " (id_profesor, cod_curso) VALUES (" + str(datos["id_profesor"]) + "," + str(datos["cod_curso"]) + ");")
+        try:
+            cur.execute("INSERT INTO " + tabla + " (id_profesor, cod_curso) VALUES (" + str(datos["id_profesor"]) + "," + str(datos["cod_curso"]) + ");")
+        except:
+            print("El profeosr ya impartia ese curso.")
     elif tabla == "cursos_alumnos":  # El insert de cursos-alumno sacando los datos de un diccionario
-        cur.execute("INSERT INTO " + tabla + " (num_exp, cod_curso) VALUES (" + str(datos["num_exp"]) + "," + str(datos["cod_curso"]) + ");")
+        try:
+            cur.execute("INSERT INTO " + tabla + " (num_exp, cod_curso) VALUES (" + str(datos["num_exp"]) + "," + str(datos["cod_curso"]) + ");")
+        except:
+            print("El alumno ya pertenecia a ese curso.")
 
     conn.commit()  # Commit
 
@@ -172,7 +178,7 @@ def delete(conn, tabla, primary):
         cur.execute(
             "DELETE FROM " + tabla + " WHERE dni = '" + primary + "';")  # Si la primary concuerda borramos la row
     elif tabla == 'cursos':
-        cur.execute("DELETE FROM " + tabla + " WHERE nombre = '" + primary + "';")  # Si la primary concuerda borramos la row
+        cur.execute("DELETE FROM " + tabla + " WHERE nombre = '" + str(primary) + "';")  # Si la primary concuerda borramos la row
     elif tabla == "cursos_profesores":
         cur.execute("DELETE FROM cursos_profesores WHERE id_profesor = " + str(primary["id_profesor"]) + " AND cod_curso =" + str(primary["cod_curso"]) + ";")
     elif tabla == "cursos_alumnos":
