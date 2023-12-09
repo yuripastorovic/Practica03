@@ -184,13 +184,30 @@ def busqueda(conn):
             while not finale:
                 alumno = busqueda_unica(conn)
                 if alumno is not None:
-                    print("ID: ", alumno[0])
-                    print("Nombre: ", alumno[1])
-                    print("Apellido: ", alumno[2])
-                    print("Telefono: ", alumno[3])
-                    print("Direccion: ", alumno[4])
-                    print("Fecha de nacimineto: ", alumno[5], "\n")
-                    finale = True
+                    alumno = gestion_BBDD.selec_join(conn, "alumnos", alumno[0])
+                    nombre_alum = ""
+                    if len(alumno[0]) == 6:
+                        print("ID: ", alumno[0][0])
+                        print("Nombre: ", alumno[0][1])
+                        print("Apellido: ", alumno[0][2])
+                        print("Telefono: ", alumno[0][3])
+                        print("Direccion: ", alumno[0][4])
+                        print("Fecha de nacimineto: ", alumno[0][5], "\n")
+                        finale = True
+                    elif len(alumno[0]) == 7:
+                        for i in range(0, len(alumno)):
+                            if nombre_alum != alumno[i][1]:
+                                nombre_alum = alumno[i][1]
+                                print("ID: ", alumno[i][0])
+                                print("Nombre: ", alumno[i][1])
+                                print("Apellido: ", alumno[i][2])
+                                print("Telefono: ", alumno[i][3])
+                                print("Direccion: ", alumno[i][4])
+                                print("Fecha de nacimineto: ", alumno[i][5])
+                                print("Cursos: ", alumno[i][6], end="")
+                            else:
+                                print(" | ", alumno[i][6], end="")
+                        print()
             if not utiles_validaciones.confirmacion("Desea buscar otro alumno?"):
                 print("Voviendo al menu anterior")
                 salida = True
@@ -389,13 +406,29 @@ def mostrar_todos(conn):
     """
     if len(gestion_BBDD.selec_all_from_tabla(conn, "alumnos")) > 0:  # Asegurarnos de que existe algun alumno
         print("Mostrar todos los alumnos:")
-        alumnos = gestion_BBDD.selec_all_from_tabla(conn, "alumnos")
+        alumnos = gestion_BBDD.select_all_left_join(conn, "alumnos")
+        nombre_alumno = ""
         for row in alumnos:  #Recorremos las row de profesores mostrando los profesores
-            print("ID: ", row[0])
-            print("Nombre: ", row[1])
-            print("Apellido: ", row[2])
-            print("Telefono: ", row[3])
-            print("Direccion: ", row[4])
-            print("Fecha de nacimineto: ", row[5], "\n")
+            if len(row) == 6:
+                print("\n")
+                print("ID: ", row[0])
+                print("Nombre: ", row[1])
+                print("Apellido: ", row[2])
+                print("Telefono: ", row[3])
+                print("Direccion: ", row[4])
+                print("Fecha de nacimineto: ", row[5], "\n")
+            elif len(row) == 7:
+                if nombre_alumno != row[1]:
+                    nombre_alumno = row[1]
+                    print("\n")
+                    print("ID: ", row[0])
+                    print("Nombre: ", row[1])
+                    print("Apellido: ", row[2])
+                    print("Telefono: ", row[3])
+                    print("Direccion: ", row[4])
+                    print("Fecha de nacimineto: ", row[5])
+                    print("Cursos: ", row[6], end="")
+                else:
+                    print(" | ", row[6], end="")
     else:
         print("No existen alumnos que mostrar")
