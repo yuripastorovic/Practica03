@@ -1,5 +1,5 @@
 """
-this is gestion_BBDD
+Este fichero Python se encarga de la gestion de la BBDD
 """
 import pymysql
 from datetime import datetime
@@ -279,6 +279,13 @@ def existe_relacion(conn, tabla, primary):
 
 
 def tiene_profesor(conn, primary):
+    """
+    Funcion que confirma o no que un profesor imparte un curso
+    :param conn: Conexion con BBDD
+    :param primary: Codigo del curso que se busca
+    :return: Tupla vacia: El curso no tiene ningun profesor asignado
+    :return: Tupla con contenido: El curso tiene un porfesor asignado
+    """
     cur = conn.cursor()
     cur.execute("SELECT cursos.*, profesores.nombre, profesores.id_profesor FROM cursos INNER JOIN cursos_profesores ON cursos.cod_curso = cursos_profesores.cod_curso INNER JOIN profesores on cursos_profesores.id_profesor = profesores.id_profesor WHERE cursos.cod_curso = " + str(primary) + ";")
     out = cur.fetchall()
@@ -330,6 +337,12 @@ def selec_join(conn, tabla, primary):
 
 
 def select_all_left_join(conn, tabla):
+    """
+    Funcion que devuelve las relaciones entre Alumno-Curso y Alumno-Profesor
+    :param conn: Conexion con BBDD
+    :param tabla: Tabla sobre la que se realizara la busqueda
+    :return: out: Tupla que contiene las relaciones entre la tabla seleccionada y cursos.
+    """
     cur = conn.cursor()  # Generamos cursor
     out = ()
 

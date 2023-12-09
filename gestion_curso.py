@@ -1,5 +1,5 @@
 """
-this is gestion_curso
+Este fichero Python se encarga de la gestion de cursos
 """
 import gestion_BBDD
 import utiles_validaciones
@@ -33,6 +33,12 @@ def alta(conn):
 
 
 def busqueda_unica(conn):
+    """
+    Funcion de apoyo que permite identificar un curso de forma inequivoca
+    :param conn: conexion con BBDD
+    :return: curso: Devuelve un el curso elegido
+    :return: None: Se ha superado el maximo de intentos para buscar un curso
+    """
     if len(gestion_BBDD.selec_all_from_tabla(conn, "cursos")) > 0:  # Asegurarnos de que existe alumno alumno
         print("Buscar Curso")
         salida = False
@@ -67,6 +73,11 @@ def busqueda_unica(conn):
 
 
 def busqueda(conn):
+    """
+    Funcion que permite buscar un alumno e imprimir sus datos
+    :param conn: Conexion con BBDD
+    :return: None:
+    """
     if len(gestion_BBDD.selec_all_from_tabla(conn, "cursos")) > 0:
         fallos = 0
         finale = False
@@ -86,6 +97,11 @@ def busqueda(conn):
 
 
 def baja(conn):
+    """
+    Funcion que permite dar de baja un alumno
+    :param conn: Conexion con BBDD
+    :return: None:
+    """
     if len(gestion_BBDD.selec_all_from_tabla(conn, "cursos")) > 0:
         print('Baja Curso')
         finale = False

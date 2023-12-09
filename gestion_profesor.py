@@ -1,5 +1,5 @@
 """
-this is gestion_profesion
+Este fichero Python se encarga de la gestion de profesores
 """
 import utiles_validaciones
 import gestion_BBDD

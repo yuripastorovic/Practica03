@@ -1,3 +1,6 @@
+"""
+Este fichero Python se encarga de la gestion de las relaciones Alumno-Curso, Curso-Profesor
+"""
 import gestion_BBDD
 import gestion_alumno
 import gestion_curso
@@ -76,6 +79,11 @@ def desmatricular_profesor_curso(conn):
 
 
 def matricular_curso_alumno(conn):
+    """
+    Funcion que permite matricular un alumno en un curso
+    :param conn: Conexion con BBDD
+    :return: None
+    """
     salida = False
     while not salida:
         print("Relacionar alumnos y cursos.")
@@ -94,6 +102,11 @@ def matricular_curso_alumno(conn):
 
 
 def desmatricular_curso_alumno(conn):
+    """
+    Funcion que permite desmatricular un alumno de un curso
+    :param conn: Conexion con BBDD
+    :return: None
+    """
     salida = False
     while not salida:
         print("Relacionar alumnos y cursos.")

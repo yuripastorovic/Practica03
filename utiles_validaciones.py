@@ -1,5 +1,5 @@
 """
-this is ustiles_validaciones
+Este fichero Python se encarga de agrupar funciones que apoyo que verifican la introduccion de datos por el usuario, asi como la gestion de estos
 """
 from datetime import datetime
 from configparser import ConfigParser
@@ -54,6 +54,12 @@ def entrada_teclado(contexto=""):
 
 
 def check_index(indice):
+    """
+    Funcion de apoyo que permite gestionar los fallos en una opcion cerrada de 0 a n
+    :param indice: Delimita el rango de opciones elegibles
+    :return: index: respuesta del usuario
+    :return: None: El usuario ha superado el numero maximo de intentos y sale del proceso
+    """
     ind_arreglado = int(indice)
     ind_arreglado += 1
     fallos = 0

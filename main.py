@@ -1,12 +1,11 @@
-import utiles_validaciones
-import gestion_alumno
+"""
+Este fichero Python es desde donde se ejecuta el programa
+"""
+import menu
 import gestion_BBDD
-"""
-this is the main
-"""
+
+print("Inicio del programa")
 conn = gestion_BBDD.mysqlconnect()
-
-gestion_alumno.busqueda(conn)
-
+menu.main_menu(conn)
 conn.close()
-#utiles_validaciones.check_fecha()
+print("Fin del programa")

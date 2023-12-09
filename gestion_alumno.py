@@ -44,6 +44,12 @@ def alta(conn):
 
 
 def busqueda_unica(conn):
+    """
+    Funcion de apoyo que devuelve un alumno inequivocamente
+    :param conn: conexion con BBDD
+    :return: alumno: El alumno que se buscaba
+    :return: None: Si no encuentra un alumno en 5 intentos
+    """
     if len(gestion_BBDD.selec_all_from_tabla(conn, "alumnos")) > 0:  # Asegurarnos de que existe algun alumno
         salida = False
         respuesta = None
@@ -137,6 +143,11 @@ def busqueda_unica(conn):
 
 
 def baja(conn):
+    """
+    Funcion para dar de baja a un alumno
+    :param conn:    Conexion con BBDD
+    :return:    None:
+    """
     print('Baja Alumno')
     if len(gestion_BBDD.selec_all_from_tabla(conn, "alumnos")) > 0:  # Asegurarnos de que existe algun alumno
         finale = False
@@ -160,6 +171,11 @@ def baja(conn):
 
 
 def busqueda(conn):
+    """
+    Funcion para buscar alumno, imprime por panatalla sus datos
+    :param conn:    Conexion con BBDD
+    :return:    None:
+    """
     print('Buscar Alumno')
     if len(gestion_BBDD.selec_all_from_tabla(conn, "alumnos")) > 0:  # Asegurarnos de que existe algun alumno
         salida = False
@@ -183,6 +199,11 @@ def busqueda(conn):
 
 
 def modificar(conn):
+    """
+    Funcion que permite modificar un alumno
+    :param conn: Conexion con BBDD
+    :return: None
+    """
     fallos = 0
     finale = False
     while not finale:
@@ -336,6 +357,11 @@ def modificar(conn):
 
 
 def mostrar_todos(conn):
+    """
+    Permite mostrar todos los alumnos de la BBDD
+    :param conn: Conexion con BBDD
+    :return: None
+    """
     if len(gestion_BBDD.selec_all_from_tabla(conn, "alumnos")) > 0:  # Asegurarnos de que existe algun alumno
         print("Mostrar todos los alumnos:")
         alumnos = gestion_BBDD.selec_all_from_tabla(conn, "alumnos")
