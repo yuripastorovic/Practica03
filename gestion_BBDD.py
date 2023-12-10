@@ -10,16 +10,21 @@ def mysqlconnect():
     Funcion que crea y devuelve la conexion a la base de datos.
     :return: un objeto con la conexion a la BD.
     """
-    datos = utiles_validaciones.lectura()
-    conn = pymysql.connect(
-        host=datos['host'],
-        user=datos['user'],
-        port=int(datos['port'])  # Puerto por defecto de MariaDB
-    )
+    try:
+        datos = utiles_validaciones.lectura()
+        conn = pymysql.connect(
+            host=datos['host'],
+            user=datos['user'],
+            port=int(datos['port'])  # Puerto por defecto de MariaDB
+        )
 
-    create_tables(conn)  # Crea las tablas si no existen
+        create_tables(conn)  # Crea las tablas si no existen
 
-    return conn  # Devuelve la conexion con la BBDD
+        return conn  # Devuelve la conexion con la BBDD
+    except:
+        print("Parece que hubo un error al conectarse a la base de datos.")
+        print("Compruebe que la base de datos este encendida y el fichero de configuracion intacto.")
+        return None
 
 
 def create_tables(conn):

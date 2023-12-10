@@ -5,7 +5,11 @@ import menu
 import gestion_BBDD
 
 print("Inicio del programa")
+
 conn = gestion_BBDD.mysqlconnect()
-menu.main_menu(conn)
-conn.close()
+
+if conn is not None:
+    menu.main_menu(conn)
+    conn.close()
+
 print("Fin del programa")
