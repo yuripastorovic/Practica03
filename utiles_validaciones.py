@@ -300,18 +300,16 @@ def lectura():
     try:
         host = (config.get('BBDD', 'host'))
         user = (config.get('BBDD', 'user'))
-        password = (config.get('BBDD', 'password'))
         port = (config.get('BBDD', 'port'))
-        datos = {'host': host, 'user': user, 'password': password, 'port': port}
+        datos = {'host': host, 'user': user, 'port': port}
 
         return datos
     except:
         print("Imposible cargar datos desde el fichero de configuracion \"config.txt\"\nCargando configuracion por defecto")
         host = 'localhost'
         user = 'root'
-        password = '1234'
         port = 3308
-        datos = {'host': host, 'user': user, 'password': password, 'port': port}
+        datos = {'host': host, 'user': user, 'port': port}
 
         return datos
 

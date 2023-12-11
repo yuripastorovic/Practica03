@@ -15,7 +15,7 @@ def mysqlconnect():
         conn = pymysql.connect(
             host=datos['host'],
             user=datos['user'],
-            port=int(datos['port'])  # Puerto por defecto de MariaDB
+            port=int(datos['port'])  # Puerto de MariaDB
         )
 
         create_tables(conn)  # Crea las tablas si no existen
