@@ -72,9 +72,8 @@ def check_index(indice):
                 print('Recuerde introducir un valor entre 1 y '+str(ind_arreglado))
                 fallos = fails(fallos)
         else:
-            print("No deje espacios vacios")
+            print("opcion no valida"+"\n")
             fallos = fails(fallos)
-            
     return None
 
 
@@ -166,12 +165,12 @@ def check_telefono():
                     return campo
                 else:
                     print("Telefono tiene una longituz no valida, longitud debe ser: 9")
-                    fallo = fails(fallos)
+                    fallos = fails(fallos)
             else:
                 print("Telefono contiene caracteres no validos")
-                fallo = fails(fallos)
+                fallos = fails(fallos)
         else:
-            fallo = fails(fallos)
+            fallos = fails(fallos)
     print("Se han producido 5 fallos.\nAbotortando proceso")
     return None
 

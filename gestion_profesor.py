@@ -32,10 +32,13 @@ def alta(conn):
 
             gestion_BBDD.insert(conn, "profesores", datos)  #Realizamos el insert
 
-            print("Alta realizada con existo")
+            print("Alta realizada con existo"+"\n")
 
         if not utiles_validaciones.confirmacion("Quieres tratar de dar de alta otro profesor?"):  #Preguntamos si quiere dar otro profesor de alta
             done = True
+            print("-"*20+"\n")
+        else:
+            print("\n")
 
 
 def baja(conn):
@@ -56,17 +59,25 @@ def baja(conn):
                     if utiles_validaciones.confirmacion("Seguro que desea eliminar a " + profesor[0][2] + " del sistema?"):  #pedimos confirmacion
 
                         gestion_BBDD.delete(conn, "profesores", dni)  #Mandamos el delete
-                        print("Baja realizada con existo")
+                        print("Baja realizada con existo"+"\n")
 
+                    else:
+                        print("Baja cancelada"+"\n")
                 else:
-                    print("No se encontro ningun profesor con ese DNI.")
+                    print("No se encontro ningun profesor con ese DNI."+"\n")
 
-            if len(gestion_BBDD.selec_all_from_tabla(conn, "profesores")) > 0 and not utiles_validaciones.confirmacion("Desea dar de baja otro profesor"):  #Si quedan profesores y no quiere borrar mas salimos
-                done = True
+            if len(gestion_BBDD.selec_all_from_tabla(conn, "profesores")) > 0:
+                if not utiles_validaciones.confirmacion("Desea dar de baja otro profesor"):  #Si quedan profesores y no quiere borrar mas salimos
+                    done = True
+                    print("-"*20+"\n")
+                else:
+                    print("\n")
             if len(gestion_BBDD.selec_all_from_tabla(conn, "profesores")) == 0:  #Si no quedan profesores salimos
                 done = True
+                print("-"*20+"\n")
     else:  #Si no hay profesores
         print("No hay profesores en el centro.")
+        print("-"*20+"\n")
 
 
 def buscar(conn):
@@ -84,6 +95,7 @@ def buscar(conn):
             if dni is not None:
                 profesor = gestion_BBDD.selec_join(conn, "profesores", dni)  #Encontramos al profesor
                 if len(profesor) > 0:  #Si lo encuentra lo muestra
+                    print("\n"+"-"*20)
                     if len(profesor[0]) == 5:
                         print("ID: ", profesor[0][0])
                         print("Nombre: ", profesor[0][2])
@@ -104,13 +116,18 @@ def buscar(conn):
                         print("cursos:", cursos)
                         print()
 
+                    print("\n"+"-"*20)
                 else:
-                    print("No se encontro ningun profesor con ese DNI.")
+                    print("No se encontro ningun profesor con ese DNI."+"\n")
 
             if not utiles_validaciones.confirmacion("Desea buscar otro profesor"):  #Pedimos confirmacion para buscar mas de uno
                 done = True
+                print("-"*20+"\n")
+            else:
+                print("\n")
     else:  #Si no hay profesores
         print("No hay profesores en el centro.")
+        print("-"*20+"\n")
 
 
 def mostrar_todos(conn):
@@ -141,9 +158,10 @@ def mostrar_todos(conn):
             else:
                 if row[5] is not None:
                     print(" " +row[5], end="")
-        print()
+        print("-"*20+"\n")
     else:  #Si no hay profesores
         print("No hay profesores en el centro.")
+        print("-"*20+"\n")
 
 
 def modificar(conn):
@@ -178,9 +196,9 @@ def modificar(conn):
                             if utiles_validaciones.confirmacion("Seguro que desea cambiar el nombre: " + datos["nombre"] + " por " + nombre + "?"):
                                 datos["nombre"] = nombre
                                 gestion_BBDD.update(conn, "profesores", datos, dni)
-                                print("Modificacion realizada exitosamente")
+                                print("Modificacion realizada exitosamente"+"\n")
                             else:
-                                print("Modificacion cancelada")
+                                print("Modificacion cancelada"+"\n")
 
                         elif elec == "2":  #Cambio de dni. Se pide nuevo nombre, si se acepta la confirmacion se cambia en el diccionario y se manda a uodatear.
                             print("Nuevo ", end="")
@@ -190,9 +208,9 @@ def modificar(conn):
                                     datos["dni"] = dni2
                                     gestion_BBDD.update(conn, "profesores", datos, dni)
                                     dni = dni2  #Se actualiza el valor de la unique que se usa para buscar
-                                    print("Modificacion realizada exitosamente")
+                                    print("Modificacion realizada exitosamente"+"\n")
                                 else:
-                                    print("Modificacion cancelada")
+                                    print("Modificacion cancelada"+"\n")
 
                             else:
                                 print("Ese dni ya pertenece a otro profesor")
@@ -203,9 +221,9 @@ def modificar(conn):
                             if utiles_validaciones.confirmacion("Seguro que desea cambiar la direccion:  " + datos["direccion"] + " por " + direccion + "?"):
                                 datos["direccion"] = direccion
                                 gestion_BBDD.update(conn, "profesores", datos, dni)
-                                print("Modificacion realizada exitosamente")
+                                print("Modificacion realizada exitosamente"+"\n")
                             else:
-                                print("Modificacion cancelada")
+                                print("Modificacion cancelada"+"\n")
 
                         elif elec == "4":  #Cambio de telefono. Se pide nuevo nombre, si se acepta la confirmacion se cambia en el diccionario y se manda a uodatear.
                             print("Nuevo ", end="")
@@ -213,10 +231,10 @@ def modificar(conn):
                             if utiles_validaciones.confirmacion("Seguro que desea cambiar el telefono:  " + datos["telefono"] + " por " + telefono + "?"):
                                 datos["telefono"] = telefono
                                 gestion_BBDD.update(conn, "profesores", datos, dni)
-                                print("Modificacion realizada exitosamente")
+                                print("Modificacion realizada exitosamente"+"\n")
 
                             else:  #Se sale
-                                print("Modificacion cancelada")
+                                print("Modificacion cancelada"+"\n")
                         elif elec == "5":
                             nombre = None
                             direccion = None
@@ -236,22 +254,26 @@ def modificar(conn):
                                     datos = {"dni": dni2, "nombre": nombre, "direccion": direccion, "telefono": telefono}  #Pasamos los datos a un diccionario
                                     gestion_BBDD.update(conn, "profesores", datos, dni)
                                     dni = dni2
-                                    print("Modificacion realizada exitosamente")
+                                    print("Modificacion realizada exitosamente"+"\n")
 
                                 else:
-                                    print("Modificacion cancelada")
+                                    print("Modificacion cancelada"+"\n")
 
                         elif elec == "0":
-                            print("Saliendo del menu de modificacion.")
+                            print("Saliendo del menu de modificacion."+"\n")
 
                         else:  #Opcion no valida
-                            print("Opcion no valida.")
+                            print("Opcion no valida."+"\n")
                 else:
-                    print("No se encontro ningun profesor con ese DNI.")
+                    print("No se encontro ningun profesor con ese DNI."+"\n")
             else:
-                print("El dni no pertenece al de ningun profesor existente en la bbdd")
+                print("El dni no pertenece al de ningun profesor existente en la bbdd"+"\n")
 
             if not utiles_validaciones.confirmacion("Desea modificar otro profesor?"):  #Para modificar mas de un profesor
-                        done = True
+                done = True
+                print("-"*20+"\n")
+            else:
+                print("\n")
     else:  #Si no hay profesores
        print("No hay profesores en el centro.")
+       print("-"*20+"\n")

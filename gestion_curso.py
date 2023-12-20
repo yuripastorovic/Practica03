@@ -26,10 +26,13 @@ def alta(conn):
 
             gestion_BBDD.insert(conn, "cursos", datos)  #Realizamos el insert
 
-            print("Alta realizada con existo")
+            print("Alta realizada con existo"+"\n")
 
         if not utiles_validaciones.confirmacion("Quieres tratar de dar de alta otro curso?"):  #Preguntamos si quiere dar otro profesor de alta
             done = True
+            print("-"*20+"\n")
+        else:
+            print("\n")
 
 
 def busqueda_unica(conn):
@@ -94,6 +97,7 @@ def busqueda(conn):
                 finale = True
     else:
         print("No hay cursos en el sistema.")
+        print("-"*20+"\n")
 
 
 def baja(conn):
@@ -112,15 +116,24 @@ def baja(conn):
                 while not finale:
                     if utiles_validaciones.confirmacion("Seguro que desea dar de baja el curso: " + curso[1] + " del sistema?"):
                         gestion_BBDD.delete(conn, "cursos", curso[1])  # Mandamos el delete
-                        print("Baja realizada con existo")
+                        print("Baja realizada con existo"+"\n")
                         finale = True
                     else:
-                        print("Baja abortada.")
+                        print("Baja abortada."+"\n")
                         finale = True
-            if not utiles_validaciones.confirmacion("Desea dar de baja otro curso?"):
+            if len(gestion_BBDD.selec_all_from_tabla(conn, "cursos")) > 0:
+                if not utiles_validaciones.confirmacion("Desea dar de baja otro curso?"):
+                    salida = True
+                    print("-"*20+"\n")
+                else:
+                    print("\n")
+            else:
+                print("No quedan cursos por borrar")
                 salida = True
+                print("-"*20+"\n")
     else:
         print("No hay cursos en el sistema.")
+        print("-"*20+"\n")
 
 
 def modificar(conn):
@@ -138,7 +151,7 @@ def modificar(conn):
                     print("Que desea modificar:\n1. Nombre\n2. Descripcion\n3. Modificar todos los datos\n0. Para salir")
                     modif = input()
                     if modif == "0":
-                        print("Modificacion abortada")
+                        print("Modificacion abortada"+"\n")
                         finale = True
                     elif modif == "1":
                         confirmado = False
@@ -151,8 +164,9 @@ def modificar(conn):
                                         nuevo = {"nombre": name, "descripcion": curso[2]}
                                         gestion_BBDD.update(conn, "cursos", nuevo, curso[1])
                                         confirmado = True
+                                        print("Modificacion realizada con exito"+"\n")
                                     else:
-                                        print("Modificacion abortada")
+                                        print("Modificacion abortada"+"\n")
                                         confirmado = True
                             else:
                                 print("Modificacion abortada, se han superado el maximo de fallos\nVolviendo al menu anterior")
@@ -167,8 +181,9 @@ def modificar(conn):
                                     nuevo = {"nombre": curso[1], "descripcion": des}
                                     gestion_BBDD.update(conn, "cursos", nuevo, curso[1])
                                     confirmado = True
+                                    print("Modificacion realizada con exito"+"\n")
                                 else:
-                                    print("Modificacion abortada")
+                                    print("Modificacion abortada"+"\n")
                                     confirmado = True
                             else:
                                 print("Modificacion abortada, se han superado el maximo de fallos\nVolviendo al menu anterior")
@@ -187,8 +202,9 @@ def modificar(conn):
                                             nuevo = {"nombre": name, "descripcion": des}
                                             gestion_BBDD.update(conn, "cursos", nuevo, curso[1])
                                             confirmado = True
+                                            print("Modificacion realizada con exito"+"\n")
                                         else:
-                                            print("Modificacion abortada")
+                                            print("Modificacion abortada"+"\n")
                                             confirmado = True
                                     else:
                                         print("Modificacion abortada, se han superado el maximo de fallos\nVolviendo al menu anterior")
@@ -197,14 +213,18 @@ def modificar(conn):
                                     print("Modificacion abortada, se han superado el maximo de fallos\nVolviendo al menu anterior")
                                     confirmado = True
                     else:
-                        print("Opcion no valida")
+                        print("Opcion no valida"+"\n")
                         fallos = utiles_validaciones.fails(fallos)
                         if fallos == 5:
                             finale = True
             if not utiles_validaciones.confirmacion("Desea modificar otro curso?"):
                 salida = True
+                print("-"*20+"\n")
+            else:
+                print("\n")
     else:
         print("No hay cursos en el sistema.")
+        print("-"*20+"\n")
 
 
 def buscar(conn):
@@ -226,8 +246,8 @@ def buscar(conn):
             nombre = utiles_validaciones.check_campo("Nombre", 25)  #Pedimos dni valido
             if nombre is not None:
                 curso = gestion_BBDD.selec_join(conn, "cursos", nombre)  #Encontramos al profesor
-                print(len(curso))
                 if len(curso) > 0:  #Si lo encuentra lo muestra
+                    print("\n")
                     curNombre = ""
                     if len(curso[0]) == 6: #Todos los campos
                         for i in range(0, len(curso)):
@@ -243,7 +263,7 @@ def buscar(conn):
                             else:
                                 if curso[i][4] is not None and curso[i][5] is not None:
                                     print(" | " + curso[i][4] + "_" + curso[i][5], end="")
-                        print()
+                        print("\n")
 
                     elif len(curso[0]) == 4: #Silo profesores
                         print("Codigo del curso: ", curso[0][0])
@@ -251,7 +271,7 @@ def buscar(conn):
                         print("Descripcion:", curso[0][2])
                         if curso[0][3] is not None:
                             print("Profesor:", curso[0][3])
-                        print()
+                        print("\n")
 
                     elif len(curso[0]) == 5: #solo alumnos
                         for i in range(0, len(curso)):
@@ -265,22 +285,25 @@ def buscar(conn):
                             else:
                                 if curso[i][3] is not None and curso[i][4] is not None:
                                     print(" | " + curso[i][3] + "_" + curso[i][4], end="")
-                        print()
+                        print("\n")
 
                     elif len(curso[0]) == 3: #ni profesores ni alumnos
                         print("Codigo del curso: ", curso[0][0])
                         print("Nombre: ", curso[0][1])
                         print("Descripcion:", curso[0][2])
-                        print()
+                        print("\n")
 
                 else:
-                    print("No se encontro ningun curso con ese nombre.")
+                    print("No se encontro ningun curso con ese nombre."+"\n")
 
             if not utiles_validaciones.confirmacion("Desea buscar otro curso"):  #Pedimos confirmacion para buscar mas de uno
                 done = True
-
+                print("-"*20+"\n")
+            else:
+                print("\n")
     else:
         print("No hay cursos en la base de datos.")
+        print("-"*20+"\n")
 
 
 def mostrar_todos(conn):
@@ -293,10 +316,10 @@ def mostrar_todos(conn):
     if len(cursos) > 0:
         print("Mostrar todos los cursos:")
         nombre_curso = ""
-        cont = 0;
+        cont = 0
         for curso in cursos:
             if nombre_curso != curso[1] and cont != 0:
-                print()
+                print("\n\t"+"-"*10)
             if len(curso) == 3:
                 print("Codigo del curso: ", curso[0])
                 print("Nombre: ", curso[1])
@@ -336,6 +359,7 @@ def mostrar_todos(conn):
                     if curso[4] is not None and curso[5] is not None:
                         print(" | " + curso[4] + "_" + curso[5], end="")
             cont += 1
-        print()
+        print("\n"+"-"*20+"\n")
     else:
         print("No hay cursos en la base de datos.")
+        print("-"*20+"\n")
