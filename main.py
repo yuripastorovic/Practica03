@@ -10,6 +10,7 @@ conn = gestion_BBDD.mysqlconnect()
 
 if conn is not None:
     menu.main_menu(conn)
+    cursor = conn.cursor()
     conn.close()
 
 print("Fin del programa")

@@ -34,7 +34,7 @@ def create_tables(conn):
     :return: None
     """
     cur = conn.cursor()
-
+    
     cur.execute("""CREATE DATABASE IF NOT EXISTS jorge_antonio;""")  # Creamos la database si no existe
 
     cur.execute("""USE jorge_antonio;""")  # Usamos la database

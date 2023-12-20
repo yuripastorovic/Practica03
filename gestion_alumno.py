@@ -135,7 +135,7 @@ def busqueda_unica(conn):
                         print('Saliendo')
                         return None
         else:
-            print("Recuerde solo numeros")
+            print("Recuerde solo numeros") #Cambiar el comentario.
             return None
     else:
         print("No hay alumnos que mostar\nSaliendo")
@@ -208,6 +208,8 @@ def busqueda(conn):
                             else:
                                 print(" | ", alumno[i][6], end="")
                         print()
+                    #Aqui falta un finale = True para salir.
+                #Aqui va un else. BOBOLON
             if not utiles_validaciones.confirmacion("Desea buscar otro alumno?"):
                 print("Voviendo al menu anterior")
                 salida = True
