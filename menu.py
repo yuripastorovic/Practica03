@@ -14,8 +14,8 @@ def menu_alumno(conn):
     :param conn: Conexion con BBDD
     :return: None
     """
-    espai = "\n\t\t\t[--]\t" + '\033[92m'
-    espai1 = '\033[0m' + "\t\t[--]\n\t\t\t[--]\t" + '\033[92m'
+    espai = "\n\t\t\t[--]\t"
+    espai1 = "\t\t[--]\n\t\t\t[--]\t"
     salida = False
     while not salida:
         respuesta = input(
@@ -26,15 +26,15 @@ def menu_alumno(conn):
         if respuesta is not None:
             if respuesta == "0":
                 salida = True
-            if respuesta == "1":
+            elif respuesta == "1":
                 gestion_alumno.alta(conn)
-            if respuesta == "2":
+            elif respuesta == "2":
                 gestion_alumno.baja(conn)
-            if respuesta == "3":
+            elif respuesta == "3":
                 gestion_alumno.busqueda(conn)
-            if respuesta == "4":
+            elif respuesta == "4":
                 gestion_alumno.modificar(conn)
-            if respuesta == "5":
+            elif respuesta == "5":
                 gestion_alumno.mostrar_todos(conn)
             else:
                 print("Opcion no valida")
@@ -48,8 +48,8 @@ def menu_profesor(conn):
     :param conn: Conexion con BBDD
     :return: None
     """
-    espai = "\n\t\t\t[--]\t"+'\033[92m'
-    espai1 = '\033[0m'+"\t\t[--]\n\t\t\t[--]\t"+'\033[92m'
+    espai = "\n\t\t\t[--]\t"
+    espai1 = "\t\t[--]\n\t\t\t[--]\t"
     salida = False
     while not salida:
         respuesta = input(
@@ -60,15 +60,15 @@ def menu_profesor(conn):
         if respuesta is not None:
             if respuesta == "0":
                 salida = True
-            if respuesta == "1":
+            elif respuesta == "1":
                 gestion_profesor.alta(conn)
-            if respuesta == "2":
+            elif respuesta == "2":
                 gestion_profesor.baja(conn)
-            if respuesta == "3":
+            elif respuesta == "3":
                 gestion_profesor.buscar(conn)
-            if respuesta == "4":
+            elif respuesta == "4":
                 gestion_profesor.modificar(conn)
-            if respuesta == "5":
+            elif respuesta == "5":
                 gestion_profesor.mostrar_todos(conn)
             else:
                 print("Opcion no valida")
@@ -82,8 +82,8 @@ def menu_curso(conn):
     :param conn: Conexion con BBDD
     :return: None
     """
-    espai = "\n\t\t\t[--]\t"+'\033[92m'
-    espai1 = '\033[0m'+"\t\t[--]\n\t\t\t[--]\t"+'\033[92m'
+    espai = "\n\t\t\t[--]\t"
+    espai1 = "\t\t[--]\n\t\t\t[--]\t"
     salida = False
     while not salida:
         respuesta = input(
@@ -94,15 +94,15 @@ def menu_curso(conn):
         if respuesta is not None:
             if respuesta == "0":
                 salida = True
-            if respuesta == "1":
+            elif respuesta == "1":
                 gestion_curso.alta(conn)
-            if respuesta == "2":
+            elif respuesta == "2":
                 gestion_curso.baja(conn)
-            if respuesta == "3":
+            elif respuesta == "3":
                 gestion_curso.buscar(conn)
-            if respuesta == "4":
+            elif respuesta == "4":
                 gestion_curso.modificar(conn)
-            if respuesta == "5":
+            elif respuesta == "5":
                 gestion_curso.mostrar_todos(conn)
             else:
                 print("Opcion no valida")
@@ -116,8 +116,8 @@ def menu_relaciones(conn):
     :param conn: Conexion con BBDD
     :return: None
     """
-    espai = "\n\t\t\t[--]\t"+'\033[92m'
-    espai1 = '\033[0m'+"\t\t[--]\n\t\t\t[--]\t"+'\033[92m'
+    espai = "\n\t\t\t[--]\t"
+    espai1 = "\t\t[--]\n\t\t\t[--]\t"
     salida = False
     while not salida:
         respuesta = input(
@@ -130,15 +130,15 @@ def menu_relaciones(conn):
         if respuesta is not None:
             if respuesta == "0":
                 salida = True
-            if respuesta == "1":
+            elif respuesta == "1":
                 gestion_relaciones.matricular_profesor_curso(conn)
-            if respuesta == "2":
+            elif respuesta == "2":
                 gestion_relaciones.desmatricular_profesor_curso(conn)
-            if respuesta == "3":
+            elif respuesta == "3":
                 gestion_relaciones.matricular_curso_alumno(conn)
-            if respuesta == "4":
+            elif respuesta == "4":
                 gestion_relaciones.desmatricular_curso_alumno(conn)
-            if respuesta == "5":
+            elif respuesta == "5":
                 gestion_curso.mostrar_todos(conn)
             else:
                 print("Opcion no valida")
@@ -152,8 +152,8 @@ def main_menu(conn):
     :param conn: Conexion con BBDD
     :return: None
     """
-    espai = "\n\t\t[--]\t"+'\033[92m'
-    espai1 = '\033[0m'+"\t[--]\n\t\t[--]\t"+'\033[92m'
+    espai = "\n\t\t[--]\t"
+    espai1 = "\t[--]\n\t\t[--]\t"
     salida = False
     while not salida:
         respuesta = input(
@@ -162,17 +162,16 @@ def main_menu(conn):
                 36) + espai1 + "3. Curso" + " " * (
                 40) + espai1 + "4. Matricular Alumno Curso/Asignar Profesor Curso" + espai1 + " " * (
                 10) + "------" + " " * (34) + espai1 + "0. Cerrar programa" + " " * (32) + espai1 + "")
-        respuesta = input()
         if respuesta is not None:
             if respuesta == "0":
                 salida = True
-            if respuesta == "1":
+            elif respuesta == "1":
                 menu_alumno(conn)
-            if respuesta == "2":
+            elif respuesta == "2":
                 menu_profesor(conn)
-            if respuesta == "3":
+            elif respuesta == "3":
                 menu_curso(conn)
-            if respuesta == "4":
+            elif respuesta == "4":
                 menu_relaciones(conn)
             else:
                 print("Opcion no valida")
